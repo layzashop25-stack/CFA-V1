@@ -1,0 +1,740 @@
+# 🏛️ Professional Vocational Training Center Management System
+## Full-Stack React Application — Government-Grade UI
+
+---
+
+## 🎯 PROJECT OVERVIEW
+
+Build a complete, professional, government-style Student Management System (SMS) for a Moroccan Vocational Training Center (Centre de Formation Professionnelle). The system must look and feel like an official government portal — clean, formal, trustworthy, and fully RTL-compatible.
+
+---
+
+## 🛠️ TECH STACK
+
+- **Frontend:** React 18 + Vite
+- **Styling:** Tailwind CSS + custom CSS for RTL support
+- **Routing:** React Router v6
+- **State Management:** Zustand or Context API
+- **Data Persistence:** localStorage + JSON file import/export
+- **PDF Generation:** jsPDF + jsPDF-AutoTable
+- **Excel Generation & Import:** SheetJS (xlsx)
+- **Icons:** Lucide React
+- **Internationalization (i18n):** i18next + react-i18next
+- **Date Picker:** react-datepicker
+- **UI Components:** Headless UI or Radix UI
+- **Print/Export:** html2canvas + jsPDF
+
+---
+
+## 🌐 LANGUAGES (i18n)
+
+The system must support **3 languages** switchable from the navbar:
+- 🇲🇦 **العربية (AR)** — RTL, default language
+- 🇫🇷 **Français (FR)** — LTR
+- 🇬🇧 **English (EN)** — LTR
+
+All UI text, labels, buttons, table headers, alerts, and messages must be fully translated in all 3 languages. Store translations in `/locales/ar.json`, `/locales/fr.json`, `/locales/en.json`.
+
+---
+
+## 🎨 DESIGN SYSTEM — Government Style
+
+- **Color Palette:** Deep green (`#1a5c38`) as primary, white, light gray, gold accents
+- **Header:** Government logo placeholder (left), Center name (center), language switcher + user info (right)
+- **Typography:** Cairo font (Arabic), Inter (Latin)
+- **Layout:** Sidebar navigation (collapsible) + main content area
+- **RTL/LTR:** Automatically switch layout direction based on selected language
+- **Tables:** Zebra-striped, sortable, with sticky headers
+- **Responsive:** Desktop-first but mobile-friendly
+- **Branding:** Add Moroccan government-style header with emblem placeholder
+
+---
+
+## 📁 PROJECT STRUCTURE
+
+src/
+├── components/
+│   ├── layout/
+│   │   ├── Sidebar.jsx
+│   │   ├── Header.jsx
+│   │   └── Layout.jsx
+│   ├── students/
+│   │   ├── StudentList.jsx
+│   │   ├── StudentForm.jsx
+│   │   ├── StudentCard.jsx
+│   │   └── StudentImport.jsx
+│   ├── filieres/
+│   │   ├── FiliereList.jsx
+│   │   └── FiliereDetail.jsx
+│   ├── absences/
+│   │   ├── AbsenceTable.jsx
+│   │   └── AbsenceExport.jsx
+│   ├── notes/
+│   │   └── NotesManager.jsx
+│   ├── data/
+│   │   └── DataPage.jsx (Import/Export)
+│   └── shared/
+│       ├── LanguageSwitcher.jsx
+│       ├── ConfirmModal.jsx
+│       └── Pagination.jsx
+├── pages/
+│   ├── Dashboard.jsx
+│   ├── Students.jsx
+│   ├── Filieres.jsx
+│   ├── Absences.jsx
+│   ├── Notes.jsx
+│   └── DataManagement.jsx
+├── store/
+│   └── useStore.js (Zustand)
+├── locales/
+│   ├── ar.json
+│   ├── fr.json
+│   └── en.json
+├── utils/
+│   ├── exportPDF.js
+│   ├── exportExcel.js
+│   └── importExcel.js
+└── data/
+└── initialData.js
+
+
+---
+
+## 👤 MODULE 1 — STUDENT MANAGEMENT (إدارة المتدربين)
+
+### Student Data Model:
+```javascript
+{
+  id: "uuid",
+  // Personal Info
+  fullName: "",            // الاسم الكامل
+  birthDate: "",           // تاريخ الازدياد
+  birthPlace: "",          // مكان الازدياد
+  address: "",             // العنوان الشخصي
+  cinNumber: "",           // رقم البطاقة الوطنية
+  phone: "",               // رقم الهاتف
+  
+  // Academic Info
+  educationLevel: "",      // المستوى الدراسي (السابعة / التاسعة / الباك)
+  stillStudying: false,    // هل ما زال يتابع الدراسة (نعم/لا)
+  otherTraining: false,    // هل يتابع تكوين مهني آخر (نعم/لا)
+  desiredFiliere: "",      // الشعبة المرغوب فيها
+  filiereId: "",           // الشعبة المسجل فيها
+  enrollmentYear: "",      // سنة التسجيل
+  isDropout: false,        // منقطع في نصف العام
+  dropoutDate: "",         // تاريخ الانقطاع
+  dropoutReason: "",       // سبب الانقطاع
+  
+  // Guardian Info
+  guardianName: "",        // اسم ولي الأمر
+  guardianProfession: "",  // مهنة ولي الأمر
+  guardianPhone: "",       // هاتف ولي الأمر
+  
+  // Family Status
+  familyStatus: "",        // وضعية الأسرة: وسط_عادي | طلاق_الأبوين | يتيم_الأب | يتيم_الأم | يتيم_الأبوين
+  maritalStatus: "",       // الحالة العائلية: متزوج | مطلق | عازب | أرمل
+  
+  // Health
+  healthStatus: "",        // الحالة الصحية: جيدة | مرض_مزمن | إعاقة
+  disabilityType: "",      // نوع الإعاقة (إن وجدت)
+  healthCoverage: "",      // التغطية الصحية: AMO | SANS | CNOPS | CNSS
+  
+  // Logistics
+  transportMode: "",       // طريقة التنقل: مشيا | تاكسي | حافلة
+  
+  // Social & Economic
+  hasFixedIncome: false,   // هل دخل الأسرة قار (نعم/لا)
+  receivesSocialSupport: false, // هل تستفيد الأسرة من الدعم الاجتماعي المباشر (نعم/لا)
+  residenceArea: "",       // وسط الإقامة: حضري | شبه_حضري | قروي
+  isWorking: false,        // هل يعمل في مهنة (نعم/لا)
+  currentJob: "",          // مهنته الحالية
+  
+  // Metadata
+  createdAt: "",
+  updatedAt: "",
+  
+  // Notes & Documents
+  notes: ""
+}
+```
+
+### Student Features:
+1. **List Page** — searchable, filterable table with columns: Name, CIN, Phone, Filiere, Level, Status (Active/Dropout), Actions
+2. **Add/Edit Form** — multi-step form with sections (Personal, Academic, Guardian, Health, Social), validation on all fields
+3. **View Profile** — full student profile card, printable
+4. **Delete** with confirmation modal
+5. **Dropout Toggle** — mark student as منقطع with date and reason
+6. **Search & Filter** — by name, CIN, filiere, level, status, dropout status
+7. **Download Inscription PDF** — فيشة تسجيل for each student, professional format with:
+   - Center logo/header
+   - All student data in Arabic table
+   - Signature fields
+   - Footer with date
+8. **Import from Excel** — upload .xlsx file with student data mapped to fields
+9. **Bulk actions** — select multiple students, bulk delete or export
+
+---
+
+## 🎓 MODULE 2 — FILIERES (الشعب والتخصصات)
+
+### Filieres Data:
+```javascript
+const filieres = [
+  {
+    id: "halawani",
+    name: "الحلواني",
+    nameAr: "الحلواني",
+    nameFr: "Pâtisserie",
+    nameEn: "Pastry Making",
+    requiredLevel: "all",       // جميع المستويات
+    duration: 1,                // سنة واحدة
+    diplomaType: "تخصص",        // دبلوم تخصص
+    description: ""
+  },
+  {
+    id: "assistant-social",
+    name: "مساعد اجتماعي",
+    nameFr: "Assistant Social",
+    nameEn: "Social Assistant",
+    requiredLevel: "bac",       // مستوى الباك
+    duration: 2,
+    diplomaType: "تأهيل"
+  },
+  {
+    id: "mecanique-auto",
+    name: "مصلح السيارات",
+    nameFr: "Mécanicien Auto",
+    nameEn: "Auto Mechanic",
+    requiredLevel: "9eme",
+    duration: 2,
+    diplomaType: "تأهيل"
+  },
+  {
+    id: "electricite-auto",
+    name: "كهربائي السيارات",
+    nameFr: "Électricien Auto",
+    nameEn: "Auto Electrician",
+    requiredLevel: "9eme",
+    duration: 2,
+    diplomaType: "تأهيل"
+  },
+  {
+    id: "electricite-batiments",
+    name: "كهرباء المباني",
+    nameFr: "Électricité Bâtiments",
+    nameEn: "Building Electricity",
+    requiredLevel: "7eme",
+    duration: 1,
+    diplomaType: "تخصص"
+  },
+  {
+    id: "assistant-roudh",
+    name: "مساعد الروض والحضانة",
+    nameFr: "Assistant Préscolaire",
+    nameEn: "Preschool Assistant",
+    requiredLevel: "9eme",
+    duration: 2,
+    diplomaType: "تأهيل"
+  },
+  {
+    id: "informatique",
+    name: "عامل في الرقانة المعلوماتية",
+    nameFr: "Opérateur en Informatique",
+    nameEn: "Computer Operator",
+    requiredLevel: "7eme",
+    duration: 1,
+    diplomaType: "تخصص"
+  }
+]
+```
+
+### Level Definitions:
+- **مستوى الباك** = حاصل على الباكالوريا أو وصل إلى مستواها
+- **مستوى التاسعة** = حاصل على السنة التاسعة أو وصل إلى مستواها
+- **مستوى السابعة** = حاصل على السنة السابعة أو وصل إلى مستواها
+
+### Filiere Features:
+1. **Filieres List Page** — cards layout showing each filiere with icon, name, level, duration, diploma type, student count
+2. **Filiere Detail Page** — clicking a filiere shows:
+   - Filiere info header
+   - Complete list of enrolled students (table)
+   - Statistics: total students, active, dropouts, gender split
+   - Export student list as PDF or Excel
+3. **Filiere Management** — add/edit/delete filieres (admin)
+4. **Level Filter** — filter filieres by required level
+
+---
+
+## 📅 MODULE 3 — ABSENCE MANAGEMENT (إدارة الغياب)
+
+### UI Design (based on provided screenshot):
+Replicate the exact layout from the screenshot:
+- **RTL table** with columns: الاسم الكامل | 1 | 2 | 3 | ... | 30 | مجموع الغياب
+- Days numbered 1–30 across the top (representing days of month)
+- Each cell is clickable to toggle absence (click = absent, marked with ✗ or colored red)
+- Present = empty/white cell, Absent = red cell with ✗
+- **Sticky first column** (student name) and **sticky last column** (total absences)
+- **Group by filiere** — collapsible groups with folder icon (📁) showing filiere name and student count
+- Groups are color-coded header rows (green background like screenshot)
+- Total absences counter auto-updates per student
+- Month/Year selector at top to navigate between months
+
+### Absence Features:
+1. **Monthly Absence Sheet** — the main table as described above
+2. **Click to toggle** — single click marks absent, click again removes
+3. **Auto-total** — مجموع الغياب column updates automatically
+4. **Color coding:**
+   - 0 absences = green total
+   - 1-5 absences = orange total
+   - 6+ absences = red total
+5. **Export Absence Report PDF** — professional PDF matching the table layout with:
+   - Center header
+   - Month/Year
+   - Student names + absence marks per day
+   - Totals column
+   - Formatted exactly like an official absence register (كشف الغياب)
+6. **Export to Excel** — same data as Excel sheet
+7. **Print** — direct browser print optimized for A3/A4 landscape
+8. **Filter by Filiere** — show only one group at a time
+
+### Absence Data Model:
+```javascript
+{
+  studentId: "",
+  month: 1-12,
+  year: 2024,
+  absenceDays: [3, 7, 15, 22],  // array of absent day numbers
+  totalAbsences: 4,
+  justifiedDays: [3],           // أيام غياب مبررة (future feature)
+  notes: ""
+}
+```
+
+---
+
+## 📊 MODULE 4 — GRADES/NOTES (النقط والنتائج)
+
+### Notes Structure (to be expanded later):
+Each student has 2 types of grades:
+- **نظري** (Theoretical) — written exam grade /20
+- **تطبيقي** (Practical) — practical exam grade /20
+- **النتيجة النهائية** = weighted average (e.g., 40% théorie + 60% pratique)
+
+### Notes Features (basic — expandable later):
+1. Grades table per filiere — rows = students, columns = نظري | تطبيقي | النتيجة النهائية
+2. Grade input cells (inline editing)
+3. Auto-calculate final result
+4. Color code results: ≥10 = green (ناجح), <10 = red (راسب)
+5. Export grades PDF — official bulletin format
+6. **Semester selector** — S1 / S2
+7. Placeholder for future expansion (detailed module grades, absences impact, etc.)
+
+---
+
+## 💾 MODULE 5 — DATA MANAGEMENT PAGE (إدارة البيانات)
+
+Create a dedicated page at `/data-management` with:
+
+### Layout: 2 large action cards
+
+**Card 1 — IMPORT (استيراد البيانات)**
+- Icon: upload arrow
+- Title: استيراد البيانات / Import Data / Importation des données
+- Description: استورد بيانات من ملف JSON (من مستخدم آخر)
+- Button: "اختر ملف JSON" — opens file picker, accepts .json only
+- Preview: shows summary of what will be imported (X students, X filieres, X absence records)
+- Confirm button: "استيراد وإضافة" (merge) or "استيراد واستبدال" (replace all)
+- Warning: if replace, current data will be lost
+
+**Card 2 — EXPORT (تصدير البيانات)**
+- Icon: download arrow
+- Title: تصدير البيانات / Export Data / Exportation des données
+- Description: صدّر جميع بيانات النظام إلى ملف JSON
+- Checkboxes: [ ] Students [ ] Filieres [ ] Absences [ ] Notes (select what to export)
+- Button: "تصدير الآن" — downloads `center-data-YYYY-MM-DD.json`
+
+### Data Format:
+```javascript
+{
+  version: "1.0",
+  exportDate: "2024-01-15",
+  centerName: "مركز التكوين المهني",
+  data: {
+    students: [...],
+    filieres: [...],
+    absences: [...],
+    notes: [...]
+  }
+}
+```
+
+---
+
+## 🏠 DASHBOARD (لوحة القيادة)
+
+Professional dashboard with KPI cards:
+1. **إجمالي المتدربين** — total students with trend arrow
+2. **المتدربون النشيطون** — active students
+3. **المنقطعون** — dropout count with percentage
+4. **معدل الغياب** — average absences this month
+5. **الشعب** — number of filieres
+
+Charts (use Recharts):
+- Bar chart: Students per filiere
+- Pie chart: Distribution by education level
+- Line chart: Monthly absences trend
+
+Recent activity table: last 5 added students
+
+Quick action buttons: + إضافة متدرب | كشف الغياب | تصدير البيانات
+
+---
+
+## 🔧 ADDITIONAL FEATURES & IDEAS
+
+1. **Smart Search** — global search across all students by name, CIN, phone, filiere
+2. **Notifications/Badges** — students with 6+ absences flagged in sidebar
+3. **Print Mode** — dedicated CSS @media print styles for all exportable pages
+4. **Confirmation Modals** — for all destructive actions (delete, replace data)
+5. **Toast Notifications** — success/error/warning toasts (react-hot-toast)
+6. **Dark Mode** (optional toggle)
+7. **Breadcrumbs** navigation
+8. **Keyboard shortcuts** — press N to add new student
+9. **Bulk Import Validation** — when importing Excel, validate required fields and show error rows
+10. **Student Photo** — optional photo upload (stored as base64 in localStorage)
+
+---
+
+## 📝 INSCRIPTION FORM PDF TEMPLATE
+
+The downloadable فيشة التسجيل for each student must include:
+
+**Header:**
+- المملكة المغربية | وزارة التربية الوطنية والتكوين المهني
+- اسم المركز + العنوان
+- شعار (logo placeholder)
+- عنوان: بطاقة تسجيل المتدرب
+
+**Body (2-column table):**
+- All personal data fields with their values
+- All family/social fields
+- Filiere and level info
+
+**Footer:**
+- توقيع المتدرب | توقيع ولي الأمر | توقيع المسؤول
+- التاريخ والمكان
+
+---
+
+## ⚙️ TECHNICAL REQUIREMENTS
+
+1. All data persisted in **localStorage** with keys:
+   - `cfp_students`, `cfp_filieres`, `cfp_absences`, `cfp_notes`, `cfp_settings`
+2. **No backend required** — fully client-side
+3. Data initialized from `initialData.js` if localStorage is empty
+4. All forms use **controlled components** with proper validation
+5. **Error boundaries** around main sections
+6. **Loading states** for all async operations
+7. Properly handle **RTL/LTR** switching without page reload
+8. All exports use **client-side generation** (no server)
+9. Use **UUID** for all entity IDs
+10. **Responsive** sidebar: collapsible on mobile
+
+---
+
+## 🚀 GETTING STARTED INSTRUCTIONS
+
+After generating all code:
+1. `npm create vite@latest cfp-management -- --template react`
+2. Install dependencies: `npm install tailwindcss react-router-dom zustand i18next react-i18next jspdf jspdf-autotable xlsx lucide-react react-hot-toast uuid`
+3. Configure Tailwind with RTL plugin
+4. Set up i18next with Arabic as default
+5. Seed localStorage with sample data (5 students, all 7 filieres)
+
+---
+
+## ✅ DEFINITION OF DONE
+
+- [ ] All 5 modules fully functional
+- [ ] 3 languages working with instant switching
+- [ ] PDF export working for: inscription form, absence sheet, grades
+- [ ] Excel import/export working
+- [ ] JSON import/export working
+- [ ] Absence table matches screenshot design exactly
+- [ ] RTL layout correct for Arabic
+- [ ] Government-style professional UI throughout
+- [ ] No console errors
+- [ ] Sample data pre-loaded
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------
+
+✅ PROMPT (System Management School / Training Center)
+
+You are a senior full-stack developer expert in React (frontend) and modern UI systems for government-level professional applications.
+
+Your task is to build a professional multi-language management system (Arabic / French / English) for a training center / school administration system.
+
+The backend is NOT a real database. You must use:
+
+JSON files (local storage simulation)
+Browser localStorage
+Import / Export system (very important)
+
+The UI must look like a government official system:
+
+Clean
+Structured
+Professional
+Table-based dashboards
+Fast navigation
+RTL support for Arabic
+🌍 Languages Required
+
+The system must support 3 languages:
+
+Arabic (AR) 🇸🇦 (RTL layout)
+French (FR)
+English (EN)
+
+Language switcher must be global and persistent.
+
+👨‍🎓 MAIN MODULE: Student Management (Étudiants)
+
+Create a full CRUD system for students.
+
+📌 Student Fields:
+
+Each student has:
+
+الاسم الكامل (Full Name)
+تاريخ الازدياد (Date of Birth)
+مكان الازدياد (Place of Birth)
+العنوان الشخصي (Address)
+رقم البطاقة الوطنية (National ID)
+رقم الهاتف (Phone)
+المستوى الدراسي (Education Level)
+هل ما زلت تتابع الدراسة (Still studying: Yes/No)
+هل تتابع تكوين مهني آخر (Other training: Yes/No)
+الشعبة المرغوب فيها (Desired specialization)
+👨‍👩‍👧 Guardian Information:
+اسم ولي الأمر
+مهنته
+هاتفه
+🏠 Social Information:
+وضعية الأسرة:
+وسط عادي
+طلاق الأبوين
+يتيم الأب
+يتيم الأم
+يتيم الأبوين
+الحالة العائلية:
+متزوج
+مطلق
+عازب
+أرمل
+الحالة الصحية:
+جيدة
+مرض مزمن
+إعاقة
+في حالة الإعاقة: نوع الإعاقة
+التغطية الصحية:
+AMO
+CNSS
+CNOPS
+SANS
+كيفية الانتقال إلى المركز:
+مشيا
+طاكسي
+حافلة
+هل دخل الأسرة قار: (نعم / لا)
+هل تستفيد الأسرة من الدعم الاجتماعي المباشر: (نعم / لا)
+وسط الإقامة:
+حضري
+شبه حضري
+قروي
+هل يعمل:
+نعم / لا
+المهنة (إذا يعمل)
+📚 Filières (Training Programs)
+
+Create a filière system.
+
+Each student must be assigned to ONE filière.
+
+Filières list:
+الحلواني — جميع المستويات — سنة واحدة — دبلوم تخصص
+مساعد اجتماعي — مستوى باك — سنتين — دبلوم تأهيل
+مصلح السيارات — مستوى التاسعة — سنتين — دبلوم تأهيل
+كهربائي السيارات — مستوى التاسعة — سنتين — دبلوم تأهيل
+كهرباء المباني — مستوى السابعة — سنة واحدة — دبلوم تخصص
+مساعد الروض والحضانة — مستوى التاسعة — سنتين — دبلوم تأهيل
+عامل في الرقانة المعلوماتية — مستوى السابعة — سنة واحدة — دبلوم تخصص
+Filière Page Requirements:
+List all filières
+When clicking a filière → show all students inside it
+Search + filter students inside filière
+📊 Absence System (Attendance)
+
+Create an absence management module:
+
+Each student can be marked:
+Present / Absent (checkbox or X button)
+Absence must be saved per date
+Must be able to:
+View absence list per day
+Export absence file (PDF or Excel-like JSON export)
+📄 Student File Export
+
+Each student must have a feature:
+
+👉 Download "Fiche d'inscription"
+
+Formats:
+
+PDF (professional layout)
+OR printable HTML export
+
+Must include all student data formatted cleanly like an official registration form.
+
+📥 IMPORT / EXPORT SYSTEM (VERY IMPORTANT)
+
+Create a dedicated page:
+
+Buttons:
+Import Data
+Export Data
+Export:
+Export all system data as JSON file:
+students
+filières
+absences
+Import:
+Load JSON file
+Replace or merge data safely
+🧠 Additional Requirements
+Dashboard:
+Total students
+Students per filière
+Absences today
+Active vs inactive students
+Student Status:
+“منقطعين” (Dropped out students)
+Some students can be marked as:
+Active
+Dropped out (did not complete training)
+
+Must be filterable.
+
+🎨 UI/UX Requirements
+Professional admin dashboard (government style)
+Responsive design
+Sidebar navigation:
+Dashboard
+Students
+Filières
+Attendance
+Import/Export
+Clean tables with:
+pagination
+search
+filters
+Modal forms for adding/editing students
+⚙️ Technical Stack
+React (Vite or Next.js)
+Context API or Redux for state
+LocalStorage for persistence
+JSON import/export
+No backend server
+🚀 Bonus Features (if possible)
+Dark mode
+Student profile page
+Print-ready reports
+QR code for student file
+Auto-save drafts
+Multi-step student form wizard
+🎯 Goal
+
+Build a complete professional school/training center management system that looks like a real government internal software system, fully working offline using browser storage only.
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+speak with me in arabic , let make a strong system with react and other ....
+
+about backend i will work with json file and local storage so u will need to add a page in system in the page we have 2 button import and export , if i wanna import data from another user or if i wanna give my data to another user , adnd website must be professioanle is govermant website , and i wanna 3 language AR , FR , EN 
+
+
+
+first i wanna a system management manage etudiant , let start with etudiant , etudiant have , الاسم الكامل , تاريخ الازدياد , مكان الازدياد , العنوان الشخصي , رقم البطاقة الوطنية , رقم الهاتف المستوى الدراسي , هل ما زلت تتابع الدراسة , هل تتابع تكوين مهني اخر , الشعبة المرغوب فيها , معلومات عن ولي الامر , اسم ولي الامر , مهنته , هاتفه , وضعية الاسرة (وسط عادي , طلاق الابوين , يتيم الاب , يتيم الام , يتيم الابوين ) , الحالة العائلية (متزوج , مطلق , عازب , ارمل ) , الحالة الصحية (جيدة , مرض مزمن , اعاقة ) , في حالة الاعاقة ما نوعها , التغطية الصحية (AMO , SANS , CNOPS , CNSS ) , كيفية الانتقال الى المركز (مشيا , طاكسي , حافلة ) , هل دخل الاسرة قار (نعم , لا ) , هل تستفيد الاسرة من الدعم الاجتماعي المباشر ( نعم , لا ) , وسط الاقامة (حضوري , شبه حضوري , قروي ) ,  هل تعمل في مهنة معينة ( نعم , لا ) , ماهي مهنتك .
+
+i wanna add with every student i can download a fichier d'inscriptions (excel fichier or pdf ) , and we have منقطعين في نصف العام مثل بعض التلاميد لا يكملو التكوين 
+
+
+
+so now we finish with etudians and i have choice to do this manual in my system or import excel file with this information , this etudian chose a filiere let start with a filiere 
+
+
+
+الحلواني  — جميع المستويات
+
+سنة الدراسة سنة واحدة , دبلوم تخصص
+
+مساعد اجتماعي  — مستوى باك
+
+سنة الدراسة سنتين , دبلوم تاهيل 
+
+مصلح السيارات  — مستوى التاسعة
+
+سنة الدراسة سنتين , دبلوم تاهيل
+
+كهربائي السيارات  — مستوى التاسعة
+
+سنة الدراسة سنتين , دبلوم تاهيل
+
+كهرباء المباني (سنة واحدة) — مستوى السابعة
+
+سنة الدراسة سنة واحدة , دبلوم تخصص
+
+مساعد الروض و الحضانة (سنتين) — مستوى التاسعة
+
+سنة الدراسة سنتين , دبلوم تاهيل
+
+عامل في الرقانة المعلوماتية (سنة واحدة) — مستوى السابعة
+
+سنة الدراسة سنة واحدة , دبلوم تخصص
+
+اقصد مستوى باك حاصل على الباكالوريا او وصل الى مستوى الباكالوريا 
+
+اقصد مستوى التاسعة حاصل على التاسعة او وصل الى مستوى التاسعة
+
+اقصد مستوى السابعة حاصل على السابعة او وصل الى مستوى السابعة
+
+
+
+and i wanna in filiere when i chose a filier or something i can see all student in filiere 
+
+
+
+
+
+now absent i wanna something i can make x or click in something to i can make absent and download fichier d'absent u can see the picture to know how i wanna this  .... i will in future add something in here or make it better 
+
+
+
+
+
+and this etudiant have 2 notes تطبيقي و نظري so we can give him a result finale i will work in this in future 
+
+
+
+
+
+now i wanna from u make me a strong prompt include whta i say to u and if u have a some nice idea add it just give me something professionale 
+
+this prompt i will send to another AI model in vs code to make me all this 
