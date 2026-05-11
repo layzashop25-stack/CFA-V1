@@ -247,11 +247,20 @@
     "filieres": "Filières",
     "absences": "Absences",
     "notes": "Notes",
+    "trainers": "Employés",
+    "equipment": "Équipements",
     "replaceWarning": "Attention: toutes les données actuelles seront supprimées.",
     "preview": "Aperçu des données",
     "importSuccess": "Importation réussie",
     "exportSuccess": "Exportation réussie",
-    "importError": "Erreur d'importation"
+    "importError": "Erreur d'importation",
+    "cleanOrphans": "Nettoyer les données",
+    "cleanSuccess": "Données nettoyées",
+    "orphanTitle": "Données orphelines détectées",
+    "orphanDesc": "Ces enregistrements n'ont pas de stagiaire correspondant",
+    "clearAll": "Effacer toutes les données",
+    "clearConfirm": "Confirmer la suppression de toutes les données ?",
+    "clearSuccess": "Toutes les données ont été effacées"
   },
   "trainers": {
     "title": "Employés",

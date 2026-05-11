@@ -247,11 +247,20 @@
     "filieres": "Programs",
     "absences": "Absences",
     "notes": "Grades",
+    "trainers": "Employees",
+    "equipment": "Equipment",
     "replaceWarning": "Warning: all current data will be deleted.",
     "preview": "Data Preview",
     "importSuccess": "Import successful",
     "exportSuccess": "Export successful",
-    "importError": "Import error"
+    "importError": "Import error",
+    "cleanOrphans": "Clean orphan data",
+    "cleanSuccess": "Data cleaned successfully",
+    "orphanTitle": "Orphaned records detected",
+    "orphanDesc": "These records have no matching student",
+    "clearAll": "Clear all data",
+    "clearConfirm": "Confirm deletion of all data?",
+    "clearSuccess": "All data has been cleared"
   },
   "trainers": {
     "title": "Employees",

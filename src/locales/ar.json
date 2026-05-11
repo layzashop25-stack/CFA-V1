@@ -247,11 +247,20 @@
     "filieres": "الشعب",
     "absences": "الغياب",
     "notes": "النقط",
+    "trainers": "الموظفون",
+    "equipment": "المعدات",
     "replaceWarning": "تحذير: سيتم حذف جميع البيانات الحالية عند الاستبدال.",
     "preview": "معاينة البيانات",
     "importSuccess": "تم الاستيراد بنجاح",
     "exportSuccess": "تم التصدير بنجاح",
-    "importError": "خطأ في الاستيراد"
+    "importError": "خطأ في الاستيراد",
+    "cleanOrphans": "تنظيف البيانات",
+    "cleanSuccess": "تم تنظيف البيانات",
+    "orphanTitle": "تم اكتشاف بيانات معزولة",
+    "orphanDesc": "هذه السجلات ليس لها متدرب مطابق",
+    "clearAll": "حذف جميع البيانات",
+    "clearConfirm": "هل أنت متأكد من حذف جميع البيانات؟",
+    "clearSuccess": "تم حذف جميع البيانات"
   },
   "trainers": {
     "title": "الموظفون",

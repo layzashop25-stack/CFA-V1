@@ -125,23 +125,34 @@ const useStore = create((set, get) => ({
   // Historique — data is derived from students/trainers/equipment by schoolYear field
 
   // Data management
+  clearAll: () => {
+    set({ students: [], absences: [], notes: [], trainers: [], equipment: [] })
+    save('cfp_students', []); save('cfp_absences', [])
+    save('cfp_notes', []); save('cfp_trainers', []); save('cfp_equipment', [])
+  },
   importData: (data, mode) => {
     if (mode === 'replace') {
-      const students = data.students || []
-      const filieres = data.filieres || get().filieres
-      const absences = data.absences || []
-      const notes = data.notes || []
-      set({ students, filieres, absences, notes })
-      save('cfp_students', students); save('cfp_filieres', filieres)
-      save('cfp_absences', absences); save('cfp_notes', notes)
+      const students  = data.students  || []
+      const filieres  = data.filieres  || get().filieres
+      const absences  = data.absences  || []
+      const notes     = data.notes     || []
+      const trainers  = data.trainers  || []
+      const equipment = data.equipment || []
+      set({ students, filieres, absences, notes, trainers, equipment })
+      save('cfp_students', students);  save('cfp_filieres', filieres)
+      save('cfp_absences', absences);  save('cfp_notes', notes)
+      save('cfp_trainers', trainers);  save('cfp_equipment', equipment)
     } else {
-      const students = [...get().students, ...(data.students || []).filter(ns => !get().students.find(s => s.id === ns.id))]
-      const filieres = [...get().filieres, ...(data.filieres || []).filter(nf => !get().filieres.find(f => f.id === nf.id))]
-      const absences = [...get().absences, ...(data.absences || [])]
-      const notes = [...get().notes, ...(data.notes || [])]
-      set({ students, filieres, absences, notes })
-      save('cfp_students', students); save('cfp_filieres', filieres)
-      save('cfp_absences', absences); save('cfp_notes', notes)
+      const students  = [...get().students,  ...(data.students  || []).filter(ns => !get().students.find(s => s.id === ns.id))]
+      const filieres  = [...get().filieres,  ...(data.filieres  || []).filter(nf => !get().filieres.find(f => f.id === nf.id))]
+      const absences  = [...get().absences,  ...(data.absences  || [])]
+      const notes     = [...get().notes,     ...(data.notes     || [])]
+      const trainers  = [...get().trainers,  ...(data.trainers  || []).filter(nt => !get().trainers.find(t => t.id === nt.id))]
+      const equipment = [...get().equipment, ...(data.equipment || []).filter(ne => !get().equipment.find(e => e.id === ne.id))]
+      set({ students, filieres, absences, notes, trainers, equipment })
+      save('cfp_students', students);  save('cfp_filieres', filieres)
+      save('cfp_absences', absences);  save('cfp_notes', notes)
+      save('cfp_trainers', trainers);  save('cfp_equipment', equipment)
     }
   }
 }))
