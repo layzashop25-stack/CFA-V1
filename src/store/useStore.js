@@ -122,6 +122,8 @@ const useStore = create((set, get) => ({
     set({ equipment }); save('cfp_equipment', equipment)
   },
 
+  // Historique — data is derived from students/trainers/equipment by schoolYear field
+
   // Data management
   importData: (data, mode) => {
     if (mode === 'replace') {

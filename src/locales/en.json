@@ -1,4 +1,20 @@
 {
+  "historique": {
+    "title": "History",
+    "year": "School Year",
+    "filiere": "Program",
+    "effectifs": "Enrollment",
+    "active": "Active",
+    "laureats": "Graduates",
+    "succesRate": "Success Rate",
+    "abandons": "Dropouts",
+    "trainers": "Employees",
+    "equipment": "Equipment",
+    "students": "Students",
+    "byFiliere": "Summary by Program",
+    "noData": "No data for",
+    "noDataHint": "Add students, trainers or equipment by selecting this school year."
+  },
   "nav": {
     "dashboard": "Dashboard",
     "students": "Students",
@@ -7,7 +23,8 @@
     "notes": "Grades",
     "dataManagement": "Data Management",
     "equipment": "Equipment",
-    "trainers": "Trainers"
+    "trainers": "Employees",
+    "historique": "History"
   },
   "header": {
     "centerName": "Vocational Training Center",
@@ -237,11 +254,11 @@
     "importError": "Import error"
   },
   "trainers": {
-    "title": "Trainers",
-    "add": "Add Trainer",
-    "edit": "Edit Trainer",
-    "delete": "Delete Trainer",
-    "confirmDelete": "Are you sure you want to delete this trainer?",
+    "title": "Employees",
+    "add": "Add Employee",
+    "edit": "Edit Employee",
+    "delete": "Delete Employee",
+    "confirmDelete": "Are you sure you want to delete this employee?",
     "fullName": "Full Name",
     "cin": "CIN Number",
     "phone": "Phone",
@@ -258,16 +275,16 @@
     "status": "Status",
     "notes": "Notes",
     "photo": "Photo",
-    "noTrainers": "No trainers found",
+    "noTrainers": "No employees found",
     "search": "Search by name or CIN...",
     "allFilieres": "All Programs",
-    "totalTrainers": "Total Trainers",
+    "totalTrainers": "Total Employees",
     "active": "Active",
     "inactive": "Inactive",
     "contractTypes": {
-      "permanent": "Permanent",
-      "contract": "Contract",
-      "parttime": "Part-time"
+      "nazami": "Permanent (Nidami)",
+      "mustadaf": "Guest (Mustadaf)",
+      "mawdou": "Seconded (Mawdou)"
     },
     "grades": {
       "professor": "Professor",
@@ -281,11 +298,12 @@
     "edit": "Edit Equipment",
     "delete": "Delete Equipment",
     "name": "Equipment Name",
-    "serial": "Serial Number",
+    "inventaire": "Inventory No.",
     "quantity": "Quantity",
     "filiere": "Program",
+    "room": "Room / Location",
+    "allRooms": "All Rooms",
     "status": "Status",
-    "brand": "Brand",
     "description": "Description",
     "photo": "Photo",
     "addPhoto": "Add Photo",
@@ -303,7 +321,7 @@
     },
     "viewGrid": "Grid View",
     "viewTable": "Table View",
-    "search": "Search by name or serial number..."
+    "search": "Search by name or inventory no..."
   },
   "common": {
     "save": "Save",
@@ -333,6 +351,7 @@
     "total": "Total",
     "of": "of",
     "page": "Page",
-    "rows": "rows"
+    "rows": "rows",
+    "schoolYear": "School Year"
   }
 }

@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard, Users, BookOpen, CalendarX2,
-  ClipboardList, Database, GraduationCap, ChevronLeft, ChevronRight, Wrench, UserCog
+  ClipboardList, Database, GraduationCap, ChevronLeft, ChevronRight, Wrench, UserCog, History
 } from 'lucide-react'
 import useStore from '../../store/useStore'
 
@@ -14,6 +14,7 @@ const NAV = [
   { key: 'notes',          path: '/notes',           icon: ClipboardList },
   { key: 'equipment',      path: '/equipment',       icon: Wrench },
   { key: 'trainers',       path: '/trainers',        icon: UserCog },
+  { key: 'historique',     path: '/historique',      icon: History },
   { key: 'dataManagement', path: '/data-management', icon: Database },
 ]
 

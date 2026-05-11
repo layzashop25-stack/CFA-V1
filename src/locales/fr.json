@@ -1,4 +1,20 @@
 {
+  "historique": {
+    "title": "Historique",
+    "year": "Année scolaire",
+    "filiere": "Filière",
+    "effectifs": "Effectifs",
+    "active": "Actifs",
+    "laureats": "Lauréats",
+    "succesRate": "Taux de succès",
+    "abandons": "Abandons",
+    "trainers": "Employés",
+    "equipment": "Équipements",
+    "students": "Stagiaires",
+    "byFiliere": "Récapitulatif par filière",
+    "noData": "Aucune donnée pour",
+    "noDataHint": "Ajoutez des stagiaires, formateurs ou équipements en sélectionnant cette année scolaire."
+  },
   "nav": {
     "dashboard": "Tableau de bord",
     "students": "Stagiaires",
@@ -7,7 +23,8 @@
     "notes": "Notes",
     "dataManagement": "Gestion des données",
     "equipment": "Équipements",
-    "trainers": "Formateurs"
+    "trainers": "Employés",
+    "historique": "Historique"
   },
   "header": {
     "centerName": "Centre de Formation Professionnelle",
@@ -237,11 +254,11 @@
     "importError": "Erreur d'importation"
   },
   "trainers": {
-    "title": "Formateurs",
-    "add": "Ajouter formateur",
-    "edit": "Modifier formateur",
-    "delete": "Supprimer formateur",
-    "confirmDelete": "Êtes-vous sûr de supprimer ce formateur?",
+    "title": "Employés",
+    "add": "Ajouter employé",
+    "edit": "Modifier employé",
+    "delete": "Supprimer employé",
+    "confirmDelete": "Êtes-vous sûr de supprimer cet employé?",
     "fullName": "Nom complet",
     "cin": "N° CIN",
     "phone": "Téléphone",
@@ -258,16 +275,16 @@
     "status": "Statut",
     "notes": "Notes",
     "photo": "Photo",
-    "noTrainers": "Aucun formateur",
+    "noTrainers": "Aucun employé",
     "search": "Rechercher par nom ou CIN...",
     "allFilieres": "Toutes les filières",
-    "totalTrainers": "Total formateurs",
+    "totalTrainers": "Total employés",
     "active": "Actif",
     "inactive": "Inactif",
     "contractTypes": {
-      "permanent": "Permanent",
-      "contract": "Contractuel",
-      "parttime": "Temps partiel"
+      "nazami": "Titulaire (Nidami)",
+      "mustadaf": "Invité (Mustadaf)",
+      "mawdou": "Mis à disposition"
     },
     "grades": {
       "professor": "Professeur",
@@ -281,11 +298,12 @@
     "edit": "Modifier équipement",
     "delete": "Supprimer équipement",
     "name": "Nom de l'équipement",
-    "serial": "Numéro de série",
+    "inventaire": "N° d'inventaire",
     "quantity": "Quantité",
     "filiere": "Filière",
+    "room": "Salle / Local",
+    "allRooms": "Toutes les salles",
     "status": "État",
-    "brand": "Marque",
     "description": "Description",
     "photo": "Photo",
     "addPhoto": "Ajouter photo",
@@ -303,7 +321,7 @@
     },
     "viewGrid": "Vue grille",
     "viewTable": "Vue tableau",
-    "search": "Rechercher par nom ou numéro de série..."
+    "search": "Rechercher par nom ou n° d'inventaire..."
   },
   "common": {
     "save": "Enregistrer",
@@ -333,6 +351,6 @@
     "total": "Total",
     "of": "de",
     "page": "Page",
-    "rows": "lignes"
+    "schoolYear": "Année scolaire"
   }
 }

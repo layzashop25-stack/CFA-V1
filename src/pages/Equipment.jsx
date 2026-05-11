@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
 import {
   Plus, Search, Edit2, Trash2, X, Grid, List,
-  Package, Tag, Hash, Layers, ImagePlus, AlertTriangle,
-  Wrench, CheckCircle, XCircle, Filter
+  Package, Tag, Hash, Layers, ImagePlus,
+  Wrench, CheckCircle, XCircle, DoorOpen
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import ConfirmModal from '../components/shared/ConfirmModal'
@@ -16,12 +16,21 @@ const STATUS_CFG = {
   broken:      { label: 'statuses.broken',      bg: '#fee2e2', color: '#dc2626', icon: XCircle },
 }
 
+const CY = new Date().getFullYear()
+const YEAR_OPTS = Array.from({ length: CY - 2024 + 3 }, (_, i) => { const y = 2024 + i; return `${y}/${y+1}` })
+
+const ROOMS = [
+  'قاعة 1', 'قاعة 2', 'قاعة متعددة التخصصات',
+  'الحراسة العامة', 'الإدارة', 'المستودع',
+  'ورشة الميكانيك', 'ورشة الإعلاميات'
+]
+
 const EMPTY = {
-  name: '', serial: '', brand: '', quantity: 1,
-  filiereId: '', status: 'good', description: '', photo: ''
+  name: '', inventaire: '', quantity: 1,
+  filiereId: '', room: '', status: 'good', description: '', photo: '',
+  schoolYear: `${CY}/${CY+1}`
 }
 
-/* ── tiny helpers ── */
 const Stat = ({ icon: Icon, bg, color, value, label }) => (
   <div className="stat-card">
     <div className="stat-icon" style={{ background: bg }}><Icon size={22} color={color} /></div>
@@ -43,38 +52,36 @@ export default function Equipment() {
   const lang = i18n.language
   const gn = f => f ? (lang === 'ar' ? f.nameAr : lang === 'fr' ? f.nameFr : f.nameEn) : '—'
 
-  const [search,  setSearch]  = useState('')
-  const [fFil,    setFFil]    = useState('')
-  const [fStat,   setFStat]   = useState('')
-  const [view,    setView]    = useState('grid')   // 'grid' | 'table'
+  const [search,   setSearch]   = useState('')
+  const [fFil,     setFFil]     = useState('')
+  const [fStat,    setFStat]    = useState('')
+  const [fRoom,    setFRoom]    = useState('')
+  const [view,     setView]     = useState('grid')
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState(null)
-  const [delId,    setDelId]   = useState(null)
+  const [delId,    setDelId]    = useState(null)
   const [viewItem, setViewItem] = useState(null)
-  const [form,     setForm]    = useState({ ...EMPTY })
+  const [form,     setForm]     = useState({ ...EMPTY })
   const photoRef = useRef()
 
-  /* ── filtered list ── */
   const filtered = equipment.filter(e => {
     const q = search.toLowerCase()
-    return (!q || e.name.toLowerCase().includes(q) || (e.serial || '').toLowerCase().includes(q))
+    return (!q || e.name.toLowerCase().includes(q) || (e.inventaire || '').toLowerCase().includes(q))
       && (!fFil  || e.filiereId === fFil)
       && (!fStat || e.status === fStat)
+      && (!fRoom || e.room === fRoom)
   })
 
-  /* ── stats ── */
-  const totalQty   = equipment.reduce((s, e) => s + Number(e.quantity || 0), 0)
-  const goodCount  = equipment.filter(e => e.status === 'good').length
-  const maintCount = equipment.filter(e => e.status === 'maintenance').length
-  const brokenCount= equipment.filter(e => e.status === 'broken').length
+  const totalQty    = equipment.reduce((s, e) => s + Number(e.quantity || 0), 0)
+  const goodCount   = equipment.filter(e => e.status === 'good').length
+  const maintCount  = equipment.filter(e => e.status === 'maintenance').length
+  const brokenCount = equipment.filter(e => e.status === 'broken').length
 
-  /* ── form helpers ── */
   const openAdd  = () => { setEditItem(null); setForm({ ...EMPTY }); setShowForm(true) }
   const openEdit = (item, e) => { e?.stopPropagation(); setEditItem(item); setForm({ ...item }); setShowForm(true) }
 
   const handlePhoto = e => {
-    const file = e.target.files[0]
-    if (!file) return
+    const file = e.target.files[0]; if (!file) return
     const reader = new FileReader()
     reader.onload = ev => setForm(f => ({ ...f, photo: ev.target.result }))
     reader.readAsDataURL(file)
@@ -82,8 +89,8 @@ export default function Equipment() {
 
   const handleSave = () => {
     if (!form.name.trim()) return toast.error(t('common.error'))
-    if (editItem) { updateEquipment(editItem.id, form) }
-    else          { addEquipment({ ...form, id: uuidv4(), createdAt: new Date().toISOString() }) }
+    if (editItem) updateEquipment(editItem.id, form)
+    else addEquipment({ ...form, id: uuidv4(), createdAt: new Date().toISOString() })
     toast.success(t('common.success'))
     setShowForm(false)
   }
@@ -98,31 +105,20 @@ export default function Equipment() {
     )
   }
 
-  /* ── photo placeholder ── */
-  const PhotoBox = ({ src, size = 56 }) => (
-    <div style={{ width:size, height:size, borderRadius:10, overflow:'hidden', background:'#f3f4f6', border:'1px solid #e5e7eb', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      {src
-        ? <img src={src} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-        : <Package size={size * 0.4} color="#d1d5db" />
-      }
-    </div>
-  )
-
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
 
-      {/* ── Header ── */}
+      {/* Header */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
         <div>
-          <h2 style={{ fontSize:18, fontWeight:800, color:'#111827' }}>{t('equipment.title')}</h2>
+          <h2 style={{ fontSize:18, fontWeight:800, color:'var(--text)' }}>{t('equipment.title')}</h2>
           <p style={{ fontSize:12, color:'#9ca3af', marginTop:2 }}>{equipment.length} {t('equipment.title').toLowerCase()} · {totalQty} {t('equipment.totalQuantity').toLowerCase()}</p>
         </div>
         <div style={{ display:'flex', gap:8 }}>
-          {/* View toggle */}
-          <div style={{ display:'flex', border:'1.5px solid #e5e7eb', borderRadius:8, overflow:'hidden' }}>
+          <div style={{ display:'flex', border:'1.5px solid var(--border)', borderRadius:8, overflow:'hidden' }}>
             {[['grid', Grid], ['table', List]].map(([v, Icon]) => (
               <button key={v} onClick={() => setView(v)}
-                style={{ padding:'6px 10px', border:'none', cursor:'pointer', background: view===v ? '#1e293b' : '#fff', color: view===v ? '#fff' : '#6b7280', transition:'all 0.15s' }}>
+                style={{ padding:'6px 10px', border:'none', cursor:'pointer', background: view===v ? '#1e293b' : 'var(--card)', color: view===v ? '#fff' : '#6b7280', transition:'all 0.15s' }}>
                 <Icon size={15} />
               </button>
             ))}
@@ -133,19 +129,19 @@ export default function Equipment() {
         </div>
       </div>
 
-      {/* ── KPI row ── */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px,1fr))', gap:12 }}>
-        <Stat icon={Package}      bg="#fef3c7" color="#d97706" value={equipment.length} label={t('equipment.totalItems')} />
-        <Stat icon={Layers}       bg="#dbeafe" color="#1d4ed8" value={totalQty}         label={t('equipment.totalQuantity')} />
-        <Stat icon={CheckCircle}  bg="#dcfce7" color="#15803d" value={goodCount}        label={t('equipment.statuses.good')} />
-        <Stat icon={Wrench}       bg="#fef3c7" color="#d97706" value={maintCount}       label={t('equipment.statuses.maintenance')} />
-        <Stat icon={XCircle}      bg="#fee2e2" color="#dc2626" value={brokenCount}      label={t('equipment.statuses.broken')} />
+      {/* KPI */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px,1fr))', gap:12 }}>
+        <Stat icon={Package}     bg="#fef3c7" color="#d97706" value={equipment.length} label={t('equipment.totalItems')} />
+        <Stat icon={Layers}      bg="#dbeafe" color="#1d4ed8" value={totalQty}         label={t('equipment.totalQuantity')} />
+        <Stat icon={CheckCircle} bg="#dcfce7" color="#15803d" value={goodCount}        label={t('equipment.statuses.good')} />
+        <Stat icon={Wrench}      bg="#fef3c7" color="#d97706" value={maintCount}       label={t('equipment.statuses.maintenance')} />
+        <Stat icon={XCircle}     bg="#fee2e2" color="#dc2626" value={brokenCount}      label={t('equipment.statuses.broken')} />
       </div>
 
-      {/* ── Filters ── */}
+      {/* Filters */}
       <div className="card" style={{ padding:'14px 16px' }}>
         <div style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'center' }}>
-          <div style={{ position:'relative', flex:1, minWidth:200 }}>
+          <div style={{ position:'relative', flex:1, minWidth:180 }}>
             <Search size={14} style={{ position:'absolute', top:'50%', transform:'translateY(-50%)', insetInlineStart:10, color:'#9ca3af', pointerEvents:'none' }} />
             <input className="field-input" style={{ paddingInlineStart:32 }}
               placeholder={t('equipment.search')} value={search}
@@ -153,7 +149,6 @@ export default function Equipment() {
             {search && <button onClick={() => setSearch('')} style={{ position:'absolute', top:'50%', transform:'translateY(-50%)', insetInlineEnd:10, background:'none', border:'none', cursor:'pointer', color:'#9ca3af' }}><X size={13} /></button>}
           </div>
 
-          {/* Status chips */}
           <button className={`chip ${fStat==='' ? 'on' : ''}`} onClick={() => setFStat('')}>{t('students.all')}</button>
           {Object.entries(STATUS_CFG).map(([k, cfg]) => (
             <button key={k} className={`chip ${fStat===k ? 'on' : ''}`} onClick={() => setFStat(fStat===k ? '' : k)}
@@ -162,10 +157,15 @@ export default function Equipment() {
             </button>
           ))}
 
-          <div style={{ width:1, height:20, background:'#e5e7eb' }} />
+          <div style={{ width:1, height:20, background:'var(--border)' }} />
 
-          {/* Filiere select */}
-          <select className="field-input field-select" style={{ width:'auto', minWidth:180, padding:'6px 32px 6px 12px', fontSize:12 }}
+          <select className="field-input field-select" style={{ width:'auto', minWidth:160, padding:'6px 32px 6px 12px', fontSize:12 }}
+            value={fRoom} onChange={e => setFRoom(e.target.value)}>
+            <option value="">{t('equipment.allRooms')}</option>
+            {ROOMS.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+
+          <select className="field-input field-select" style={{ width:'auto', minWidth:160, padding:'6px 32px 6px 12px', fontSize:12 }}
             value={fFil} onChange={e => setFFil(e.target.value)}>
             <option value="">{t('equipment.allFilieres')}</option>
             {filieres.map(f => <option key={f.id} value={f.id}>{gn(f)}</option>)}
@@ -175,9 +175,9 @@ export default function Equipment() {
         </div>
       </div>
 
-      {/* ── GRID VIEW ── */}
+      {/* GRID VIEW */}
       {view === 'grid' && (
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(240px,1fr))', gap:14 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(230px,1fr))', gap:14 }}>
           {filtered.length === 0 ? (
             <div style={{ gridColumn:'1/-1', textAlign:'center', padding:'64px 0', color:'#9ca3af' }}>
               <Package size={40} color="#e5e7eb" style={{ margin:'0 auto 10px' }} />
@@ -185,40 +185,36 @@ export default function Equipment() {
             </div>
           ) : filtered.map(item => {
             const fil = filieres.find(f => f.id === item.filiereId)
-            const cfg = STATUS_CFG[item.status] || STATUS_CFG.good
             return (
               <div key={item.id} onClick={() => setViewItem(item)}
-                style={{ background:'#fff', borderRadius:12, border:'1px solid #e5e7eb', overflow:'hidden', cursor:'pointer', transition:'all 0.18s', boxShadow:'0 1px 3px rgba(0,0,0,0.04)' }}
+                style={{ background:'var(--card)', borderRadius:12, border:'1px solid var(--border)', overflow:'hidden', cursor:'pointer', transition:'all 0.18s', boxShadow:'0 1px 3px rgba(0,0,0,0.04)' }}
                 onMouseEnter={e => { e.currentTarget.style.boxShadow='0 6px 20px rgba(0,0,0,0.1)'; e.currentTarget.style.transform='translateY(-2px)' }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.04)'; e.currentTarget.style.transform='translateY(0)' }}
               >
-                {/* Photo */}
-                <div style={{ height:160, background:'#f9fafb', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid #f3f4f6', position:'relative', overflow:'hidden' }}>
+                <div style={{ height:150, background:'#f9fafb', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid var(--border)', position:'relative', overflow:'hidden' }}>
                   {item.photo
                     ? <img src={item.photo} alt={item.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-                    : <Package size={48} color="#d1d5db" />
+                    : <Package size={44} color="#d1d5db" />
                   }
-                  {/* Status pill on photo */}
-                  <div style={{ position:'absolute', top:10, insetInlineEnd:10 }}>
-                    <StatusBadge status={item.status} />
-                  </div>
+                  <div style={{ position:'absolute', top:8, insetInlineEnd:8 }}><StatusBadge status={item.status} /></div>
+                  {item.room && (
+                    <div style={{ position:'absolute', bottom:8, insetInlineStart:8, background:'rgba(0,0,0,0.55)', color:'#fff', fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20 }}>
+                      {item.room}
+                    </div>
+                  )}
                 </div>
-
-                {/* Body */}
-                <div style={{ padding:'14px 16px' }}>
-                  <div style={{ fontWeight:800, fontSize:14, color:'#111827', marginBottom:4, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{item.name}</div>
-                  {item.brand && <div style={{ fontSize:11, color:'#9ca3af', marginBottom:8 }}>{item.brand}</div>}
-
-                  <div style={{ display:'flex', flexDirection:'column', gap:5, marginBottom:12 }}>
-                    {item.serial && (
+                <div style={{ padding:'12px 14px' }}>
+                  <div style={{ fontWeight:800, fontSize:14, color:'var(--text)', marginBottom:4, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{item.name}</div>
+                  <div style={{ display:'flex', flexDirection:'column', gap:4, marginBottom:10 }}>
+                    {item.inventaire && (
                       <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#6b7280' }}>
                         <Hash size={12} color="#9ca3af" />
-                        <span style={{ fontFamily:'monospace' }}>{item.serial}</span>
+                        <span style={{ fontFamily:'monospace' }}>{item.inventaire}</span>
                       </div>
                     )}
                     <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#6b7280' }}>
                       <Layers size={12} color="#9ca3af" />
-                      <span>{t('equipment.quantity')}: <strong style={{ color:'#111827' }}>{item.quantity}</strong></span>
+                      <span>{t('equipment.quantity')}: <strong style={{ color:'var(--text)' }}>{item.quantity}</strong></span>
                     </div>
                     {fil && (
                       <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#6b7280' }}>
@@ -227,9 +223,7 @@ export default function Equipment() {
                       </div>
                     )}
                   </div>
-
-                  {/* Actions */}
-                  <div style={{ display:'flex', gap:6, borderTop:'1px solid #f3f4f6', paddingTop:12 }} onClick={e => e.stopPropagation()}>
+                  <div style={{ display:'flex', gap:6, borderTop:'1px solid var(--border)', paddingTop:10 }} onClick={e => e.stopPropagation()}>
                     <button className="btn btn-white btn-sm" style={{ flex:1, justifyContent:'center' }} onClick={e => openEdit(item, e)}>
                       <Edit2 size={13} /> {t('common.edit')}
                     </button>
@@ -244,18 +238,18 @@ export default function Equipment() {
         </div>
       )}
 
-      {/* ── TABLE VIEW ── */}
+      {/* TABLE VIEW */}
       {view === 'table' && (
         <div className="card">
           <div style={{ overflowX:'auto' }}>
             <table className="tbl">
               <thead>
                 <tr>
-                  <th style={{ width:60 }}>{t('equipment.photo')}</th>
+                  <th style={{ width:52 }}>{t('equipment.photo')}</th>
                   <th>{t('equipment.name')}</th>
-                  <th>{t('equipment.serial')}</th>
-                  <th>{t('equipment.brand')}</th>
+                  <th>{t('equipment.inventaire')}</th>
                   <th style={{ textAlign:'center' }}>{t('equipment.quantity')}</th>
+                  <th>{t('equipment.room')}</th>
                   <th>{t('equipment.filiere')}</th>
                   <th>{t('equipment.status')}</th>
                   <th style={{ textAlign:'center' }}>{t('students.actions')}</th>
@@ -272,19 +266,14 @@ export default function Equipment() {
                   return (
                     <tr key={item.id} style={{ cursor:'pointer' }} onClick={() => setViewItem(item)}>
                       <td>
-                        <div style={{ width:44, height:44, borderRadius:8, overflow:'hidden', background:'#f3f4f6', border:'1px solid #e5e7eb', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                          {item.photo
-                            ? <img src={item.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-                            : <Package size={18} color="#d1d5db" />
-                          }
+                        <div style={{ width:40, height:40, borderRadius:8, overflow:'hidden', background:'#f3f4f6', border:'1px solid #e5e7eb', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                          {item.photo ? <img src={item.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : <Package size={16} color="#d1d5db" />}
                         </div>
                       </td>
                       <td style={{ fontWeight:700 }}>{item.name}</td>
-                      <td style={{ fontFamily:'monospace', fontSize:12, color:'#6b7280' }}>{item.serial || '—'}</td>
-                      <td style={{ color:'#6b7280' }}>{item.brand || '—'}</td>
-                      <td style={{ textAlign:'center' }}>
-                        <span style={{ fontWeight:800, fontSize:15, color:'#111827' }}>{item.quantity}</span>
-                      </td>
+                      <td style={{ fontFamily:'monospace', fontSize:12, color:'#6b7280' }}>{item.inventaire || '—'}</td>
+                      <td style={{ textAlign:'center', fontWeight:800, fontSize:15 }}>{item.quantity}</td>
+                      <td style={{ fontSize:12, color:'#6b7280' }}>{item.room || '—'}</td>
                       <td style={{ fontSize:12, color:'#6b7280' }}>{fil ? gn(fil) : '—'}</td>
                       <td><StatusBadge status={item.status} /></td>
                       <td>
@@ -302,9 +291,7 @@ export default function Equipment() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════
-          ADD / EDIT MODAL
-      ══════════════════════════════════════ */}
+      {/* ADD / EDIT MODAL */}
       {showForm && (
         <div className="modal-bg" onClick={() => setShowForm(false)}>
           <div className="modal" style={{ maxWidth:580 }} onClick={e => e.stopPropagation()}>
@@ -313,39 +300,42 @@ export default function Equipment() {
               <button className="btn btn-ghost btn-icon-only" onClick={() => setShowForm(false)}><X size={15} /></button>
             </div>
             <div className="modal-body">
-              {/* Photo upload */}
+              {/* Photo + name */}
               <div style={{ display:'flex', gap:16, alignItems:'flex-start', marginBottom:20 }}>
-                <div style={{ width:100, height:100, borderRadius:12, overflow:'hidden', background:'#f3f4f6', border:'2px dashed #e5e7eb', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, cursor:'pointer', position:'relative' }}
+                <div style={{ width:90, height:90, borderRadius:12, overflow:'hidden', background:'#f3f4f6', border:'2px dashed #e5e7eb', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, cursor:'pointer' }}
                   onClick={() => photoRef.current.click()}>
                   {form.photo
                     ? <img src={form.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                     : <div style={{ textAlign:'center' }}>
-                        <ImagePlus size={24} color="#d1d5db" style={{ margin:'0 auto 4px' }} />
+                        <ImagePlus size={22} color="#d1d5db" style={{ margin:'0 auto 4px' }} />
                         <span style={{ fontSize:10, color:'#9ca3af' }}>{t('equipment.addPhoto')}</span>
                       </div>
                   }
                 </div>
                 <input ref={photoRef} type="file" accept="image/*" style={{ display:'none' }} onChange={handlePhoto} />
-                <div style={{ flex:1, display:'flex', flexDirection:'column', gap:10 }}>
+                <div style={{ flex:1 }}>
                   <div className="field">
                     <label className="field-label">{t('equipment.name')} <span style={{ color:'#ef4444' }}>*</span></label>
                     <input className="field-input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-                  </div>
-                  <div className="field">
-                    <label className="field-label">{t('equipment.brand')}</label>
-                    <input className="field-input" value={form.brand} onChange={e => setForm(f => ({ ...f, brand: e.target.value }))} />
                   </div>
                 </div>
               </div>
 
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
                 <div className="field">
-                  <label className="field-label">{t('equipment.serial')}</label>
-                  <input className="field-input" style={{ fontFamily:'monospace' }} value={form.serial} onChange={e => setForm(f => ({ ...f, serial: e.target.value }))} />
+                  <label className="field-label">{t('equipment.inventaire')}</label>
+                  <input className="field-input" style={{ fontFamily:'monospace' }} value={form.inventaire || ''} onChange={e => setForm(f => ({ ...f, inventaire: e.target.value }))} />
                 </div>
                 <div className="field">
                   <label className="field-label">{t('equipment.quantity')}</label>
                   <input type="number" min="1" className="field-input" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: Number(e.target.value) }))} />
+                </div>
+                <div className="field">
+                  <label className="field-label">{t('equipment.room')}</label>
+                  <select className="field-input field-select" value={form.room || ''} onChange={e => setForm(f => ({ ...f, room: e.target.value }))}>
+                    <option value="">—</option>
+                    {ROOMS.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
                 </div>
                 <div className="field">
                   <label className="field-label">{t('equipment.filiere')}</label>
@@ -362,6 +352,12 @@ export default function Equipment() {
                     ))}
                   </select>
                 </div>
+                <div className="field">
+                  <label className="field-label">{t('common.schoolYear')}</label>
+                  <select className="field-input field-select" value={form.schoolYear || ''} onChange={e => setForm(f => ({ ...f, schoolYear: e.target.value }))}>
+                    {YEAR_OPTS.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                </div>
                 <div className="field" style={{ gridColumn:'span 2' }}>
                   <label className="field-label">{t('equipment.description')}</label>
                   <textarea className="field-input" rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
@@ -376,12 +372,10 @@ export default function Equipment() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════
-          DETAIL VIEW MODAL
-      ══════════════════════════════════════ */}
+      {/* DETAIL VIEW MODAL */}
       {viewItem && (
         <div className="modal-bg" onClick={() => setViewItem(null)}>
-          <div className="modal" style={{ maxWidth:520 }} onClick={e => e.stopPropagation()}>
+          <div className="modal" style={{ maxWidth:500 }} onClick={e => e.stopPropagation()}>
             <div className="modal-head">
               <span className="modal-head-title">{viewItem.name}</span>
               <div style={{ display:'flex', gap:8 }}>
@@ -392,26 +386,21 @@ export default function Equipment() {
               </div>
             </div>
             <div className="modal-body">
-              {/* Big photo */}
-              <div style={{ width:'100%', height:220, borderRadius:12, overflow:'hidden', background:'#f3f4f6', border:'1px solid #e5e7eb', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:20 }}>
-                {viewItem.photo
-                  ? <img src={viewItem.photo} alt={viewItem.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-                  : <Package size={56} color="#d1d5db" />
-                }
+              <div style={{ width:'100%', height:200, borderRadius:12, overflow:'hidden', background:'#f3f4f6', border:'1px solid #e5e7eb', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:18 }}>
+                {viewItem.photo ? <img src={viewItem.photo} alt={viewItem.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : <Package size={52} color="#d1d5db" />}
               </div>
-
-              {/* Info grid */}
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px 20px' }}>
                 {[
-                  [t('equipment.name'),     viewItem.name],
-                  [t('equipment.brand'),    viewItem.brand || '—'],
-                  [t('equipment.serial'),   viewItem.serial || '—'],
-                  [t('equipment.quantity'), viewItem.quantity],
-                  [t('equipment.filiere'),  gn(filieres.find(f => f.id === viewItem.filiereId))],
+                  [t('equipment.name'),       viewItem.name],
+                  [t('equipment.inventaire'), viewItem.inventaire || '—'],
+                  [t('equipment.quantity'),   viewItem.quantity],
+                  [t('equipment.room'),       viewItem.room || '—'],
+                  [t('equipment.filiere'),    gn(filieres.find(f => f.id === viewItem.filiereId))],
+                  [t('common.schoolYear'),    viewItem.schoolYear || '—'],
                 ].map(([label, value]) => (
                   <div key={label}>
                     <div style={{ fontSize:11, color:'#9ca3af', fontWeight:600, marginBottom:2 }}>{label}</div>
-                    <div style={{ fontSize:13, fontWeight:600, color:'#111827', fontFamily: label === t('equipment.serial') ? 'monospace' : 'inherit' }}>{value}</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:'var(--text)' }}>{value}</div>
                   </div>
                 ))}
                 <div>
@@ -419,9 +408,8 @@ export default function Equipment() {
                   <StatusBadge status={viewItem.status} />
                 </div>
               </div>
-
               {viewItem.description && (
-                <div style={{ marginTop:16, padding:'12px 14px', background:'#f9fafb', borderRadius:8, border:'1px solid #e5e7eb' }}>
+                <div style={{ marginTop:14, padding:'10px 12px', background:'#f9fafb', borderRadius:8, border:'1px solid #e5e7eb' }}>
                   <div style={{ fontSize:11, color:'#9ca3af', fontWeight:600, marginBottom:4 }}>{t('equipment.description')}</div>
                   <div style={{ fontSize:13, color:'#374151', lineHeight:1.6 }}>{viewItem.description}</div>
                 </div>

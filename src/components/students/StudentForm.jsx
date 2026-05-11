@@ -6,10 +6,14 @@ import useStore from '../../store/useStore'
 import toast from 'react-hot-toast'
 
 const STEPS = ['personal', 'academic', 'guardian', 'health']
+const CY = new Date().getFullYear()
+const YEAR_OPTS = Array.from({ length: CY - 2024 + 3 }, (_, i) => { const y = 2024 + i; return `${y}/${y+1}` })
+
 const EMPTY = {
   fullName: '', birthDate: '', birthPlace: '', address: '', cinNumber: '', phone: '',
   educationLevel: '9eme', stillStudying: false, otherTraining: false,
   desiredFiliere: '', filiereId: '', enrollmentYear: new Date().getFullYear().toString(),
+  schoolYear: `${CY}/${CY+1}`,
   isDropout: false, dropoutDate: '', dropoutReason: '',
   guardianName: '', guardianProfession: '', guardianPhone: '',
   familyStatus: 'وسط_عادي', maritalStatus: 'عازب',
@@ -141,6 +145,12 @@ export default function StudentForm({ student, onClose }) {
                 onChange={(f, v) => { set('desiredFiliere', v); set('filiereId', v) }}
                 error={errors.filiereId} />
               <Inp field="enrollmentYear" label={F.enrollmentYear} value={data.enrollmentYear} onChange={set} />
+              <div className="field">
+                <label className="field-label">{t('common.schoolYear')} <span style={{ color: '#ef4444' }}>*</span></label>
+                <select className="field-input field-select" value={data.schoolYear || ''} onChange={e => set('schoolYear', e.target.value)}>
+                  {YEAR_OPTS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
               <Tog field="stillStudying" label={F.stillStudying} value={data.stillStudying} onChange={set} yesLabel={t('students.yes')} noLabel={t('students.no')} />
               <Tog field="otherTraining" label={F.otherTraining} value={data.otherTraining} onChange={set} yesLabel={t('students.yes')} noLabel={t('students.no')} />
             </>}

@@ -14,17 +14,21 @@ import toast from 'react-hot-toast'
 const PER = 12
 
 const CONTRACT_CFG = {
-  permanent: { bg: '#dcfce7', color: '#15803d' },
-  contract:  { bg: '#dbeafe', color: '#1d4ed8' },
-  parttime:  { bg: '#fef3c7', color: '#d97706' },
+  nazami:   { bg: '#dcfce7', color: '#15803d' },
+  mustadaf: { bg: '#dbeafe', color: '#1d4ed8' },
+  mawdou:   { bg: '#fef3c7', color: '#d97706' },
 }
+
+const CY = new Date().getFullYear()
+const YEAR_OPTS = Array.from({ length: CY - 2024 + 3 }, (_, i) => { const y = 2024 + i; return `${y}/${y+1}` })
 
 const EMPTY = {
   fullName: '', cin: '', phone: '', email: '',
-  specialty: '', grade: 'professor', contractType: 'permanent',
+  specialty: '', grade: 'professor', contractType: 'nazami',
   hireDate: '', salary: '', filiereIds: [],
   status: 'active', notes: '', photo: '',
-  hourlyRate: '', monthlyHours: ''
+  hourlyRate: '', monthlyHours: '',
+  schoolYear: `${CY}/${CY+1}`
 }
 
 export default function Trainers() {
@@ -108,7 +112,7 @@ export default function Trainers() {
   )
 
   const ContractBadge = ({ type }) => {
-    const cfg = CONTRACT_CFG[type] || CONTRACT_CFG.permanent
+    const cfg = CONTRACT_CFG[type] || CONTRACT_CFG.nazami
     return (
       <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.bg, color: cfg.color }}>
         {t(`trainers.contractTypes.${type}`)}
@@ -335,7 +339,7 @@ export default function Trainers() {
                 <div className="field">
                   <label className="field-label">{t('trainers.contractType')}</label>
                   <select className="field-input field-select" value={form.contractType} onChange={e => sf('contractType', e.target.value)}>
-                    {['permanent', 'contract', 'parttime'].map(c => (
+                    {['nazami', 'mustadaf', 'mawdou'].map(c => (
                       <option key={c} value={c}>{t(`trainers.contractTypes.${c}`)}</option>
                     ))}
                   </select>
@@ -365,6 +369,12 @@ export default function Trainers() {
                   <select className="field-input field-select" value={form.status} onChange={e => sf('status', e.target.value)}>
                     <option value="active">{t('trainers.active')}</option>
                     <option value="inactive">{t('trainers.inactive')}</option>
+                  </select>
+                </div>
+                <div className="field">
+                  <label className="field-label">{t('common.schoolYear')}</label>
+                  <select className="field-input field-select" value={form.schoolYear || ''} onChange={e => sf('schoolYear', e.target.value)}>
+                    {YEAR_OPTS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
                 </div>
 

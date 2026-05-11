@@ -12,6 +12,7 @@ import Notes from './pages/Notes'
 import DataManagement from './pages/DataManagement'
 import Equipment from './pages/Equipment'
 import Trainers from './pages/Trainers'
+import Historique from './pages/Historique'
 
 export default function App() {
   const { i18n } = useTranslation()
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="data-management" element={<DataManagement />} />
           <Route path="equipment" element={<Equipment />} />
           <Route path="trainers" element={<Trainers />} />
+          <Route path="historique" element={<Historique />} />
         </Route>
       </Routes>
     </BrowserRouter>
