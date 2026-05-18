@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard, Users, BookOpen, CalendarX2,
-  ClipboardList, Database, GraduationCap, ChevronLeft, ChevronRight, Wrench, UserCog, History
+  ClipboardList, Database, GraduationCap, ChevronLeft, ChevronRight, Wrench, UserCog, History, Presentation
 } from 'lucide-react'
 import useStore from '../../store/useStore'
 
@@ -14,6 +14,7 @@ const NAV = [
   { key: 'notes',          path: '/notes',           icon: ClipboardList },
   { key: 'equipment',      path: '/equipment',       icon: Wrench },
   { key: 'trainers',       path: '/trainers',        icon: UserCog },
+  { key: 'workshops',     path: '/workshops',       icon: Presentation },
   { key: 'historique',     path: '/historique',      icon: History },
   { key: 'dataManagement', path: '/data-management', icon: Database },
 ]
@@ -23,7 +24,7 @@ export default function Sidebar({ collapsed, onToggle }) {
   const isRtl = i18n.language === 'ar'
   const highAbs = useStore(s => {
     const now = new Date()
-    return s.absences.filter(a => a.month === now.getMonth() + 1 && a.year === now.getFullYear() && a.totalAbsences >= 6).length
+    return s.absences.filter(a => a.month === now.getMonth() + 1 && a.year === now.getFullYear() && a.totalAbsences >= 2).length
   })
 
   return (

@@ -24,6 +24,7 @@
     "dataManagement": "Gestion des données",
     "equipment": "Équipements",
     "trainers": "Employés",
+    "workshops": "Ateliers",
     "historique": "Historique"
   },
   "header": {
@@ -49,7 +50,7 @@
     "activeRate": "Taux d'activité",
     "ofTotal": "du total",
     "noDropouts": "Aucun abandon",
-    "exceededDays": "ont dépassé 6 jours",
+    "exceededDays": "ont dépassé 2 jours",
     "noHighAbsence": "Aucune absence élevée",
     "healthCoverage": "Couverture médicale",
     "specialties": "Spécialités et filières",
@@ -128,9 +129,10 @@
       "notes": "Notes"
     },
     "levels": {
-      "7eme": "Niveau 7ème",
-      "9eme": "Niveau 9ème",
-      "bac": "Niveau Bac/bac+"
+      "cap": "Moins de 6ème primaire (CAP)",
+      "6eme": "6ème primaire ou plus",
+      "3eme": "3ème collège ou plus",
+      "bac": "Niveau Bac"
     },
     "familyStatus": {
       "وسط_عادي": "Milieu normal",
@@ -180,6 +182,9 @@
     "diplomaType": "Type de diplôme",
     "studentCount": "Nb. stagiaires",
     "years": "an(s)",
+    "dsp": "Diplôme de Spécialisation (1 an)",
+    "dqp": "Diplôme de Qualification (2 ans)",
+    "cap": "Certificat d'Aptitude Professionnelle",
     "allLevels": "Tous niveaux",
     "details": "Détails filière",
     "enrolledStudents": "Stagiaires inscrits",
@@ -192,6 +197,24 @@
     "filterLevel": "Filtrer par niveau",
     "confirmDelete": "Êtes-vous sûr de supprimer cette filière?",
     "noFilieres": "Aucune filière"
+  },
+  "workshops": {
+    "title": "Ateliers et Activités",
+    "add": "Ajouter atelier",
+    "edit": "Modifier atelier",
+    "delete": "Supprimer atelier",
+    "confirmDelete": "Êtes-vous sûr de supprimer cet atelier?",
+    "total": "atelier(s)",
+    "noWorkshops": "Aucun atelier ou activité",
+    "titleLabel": "Titre",
+    "descLabel": "Description",
+    "occasion": "À l'occasion de",
+    "occasionPlaceholder": "Ex: Fête nationale, Ramadan...",
+    "date": "Date",
+    "status": "État",
+    "image": "Photo",
+    "images": "Photos",
+    "addImages": "Ajouter des photos"
   },
   "absences": {
     "title": "Gestion des Absences",
@@ -249,6 +272,7 @@
     "notes": "Notes",
     "trainers": "Employés",
     "equipment": "Équipements",
+    "workshops": "Ateliers et Activités",
     "replaceWarning": "Attention: toutes les données actuelles seront supprimées.",
     "preview": "Aperçu des données",
     "importSuccess": "Importation réussie",

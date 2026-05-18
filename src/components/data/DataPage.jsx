@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import {
   Upload, Download, AlertTriangle, CheckCircle,
   FileJson, Trash2, RefreshCw, Database,
-  Users, BookOpen, CalendarX2, ClipboardList, UserCog, Wrench
+  Users, BookOpen, CalendarX2, ClipboardList, UserCog, Wrench, Presentation
 } from 'lucide-react'
 import useStore from '../../store/useStore'
 import toast from 'react-hot-toast'
 
-const KEYS = ['students', 'filieres', 'absences', 'notes', 'trainers', 'equipment']
+const KEYS = ['students', 'filieres', 'absences', 'notes', 'trainers', 'equipment', 'workshops']
 
 const KEY_ICONS = {
   students:  { icon: Users,        color: '#3b82f6', bg: '#dbeafe' },
@@ -17,6 +17,7 @@ const KEY_ICONS = {
   notes:     { icon: ClipboardList,color: '#10b981', bg: '#d1fae5' },
   trainers:  { icon: UserCog,      color: '#ec4899', bg: '#fce7f3' },
   equipment: { icon: Wrench,       color: '#06b6d4', bg: '#cffafe' },
+  workshops: { icon: Presentation, color: '#f97316', bg: '#ffedd5' },
 }
 
 export default function DataPage() {
@@ -28,16 +29,17 @@ export default function DataPage() {
   const notes      = useStore(s => s.notes)
   const trainers   = useStore(s => s.trainers)
   const equipment  = useStore(s => s.equipment)
+  const workshops  = useStore(s => s.workshops)
   const importData = useStore(s => s.importData)
   const clearAll   = useStore(s => s.clearAll)
 
-  const storeData = { students, filieres, absences, notes, trainers, equipment }
-  const counts    = { students: students.length, filieres: filieres.length, absences: absences.length, notes: notes.length, trainers: trainers.length, equipment: equipment.length }
+  const storeData = { students, filieres, absences, notes, trainers, equipment, workshops }
+  const counts    = { students: students.length, filieres: filieres.length, absences: absences.length, notes: notes.length, trainers: trainers.length, equipment: equipment.length, workshops: workshops.length }
 
   const fileRef = useRef()
   const [preview,     setPreview]     = useState(null)
   const [importFile,  setImportFile]  = useState(null)
-  const [exportSel,   setExportSel]   = useState({ students: true, filieres: true, absences: true, notes: true, trainers: true, equipment: true })
+  const [exportSel, setExportSel] = useState({ students: true, filieres: true, absences: true, notes: true, trainers: true, equipment: true, workshops: true })
   const [confirmClear, setConfirmClear] = useState(false)
 
   const handleFileChange = e => {
@@ -55,6 +57,7 @@ export default function DataPage() {
           notes:     (json.data?.notes     || []).length,
           trainers:  (json.data?.trainers  || []).length,
           equipment: (json.data?.equipment || []).length,
+          workshops: (json.data?.workshops || []).length,
           exportDate: json.exportDate,
         })
       } catch {

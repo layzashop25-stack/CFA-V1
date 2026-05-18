@@ -8,7 +8,8 @@ import toast from 'react-hot-toast'
 import { v4 as uuidv4 } from 'uuid'
 import { X } from 'lucide-react'
 
-const LVL_BADGE = { '7eme': 'badge-amber', '9eme': 'badge-blue', 'bac': 'badge-green', 'all': 'badge-gray' }
+const LVL_BADGE = { '6eme': 'badge-amber', '3eme': 'badge-blue', 'cap': 'badge-purple', 'bac': 'badge-green', 'all': 'badge-gray' }
+const DIPLOMA_BADGE = { 'DSP': 'badge-amber', 'DQP': 'badge-blue', 'CAP': 'badge-purple' }
 
 export default function FiliereList() {
   const { t, i18n } = useTranslation()
@@ -23,14 +24,14 @@ export default function FiliereList() {
   const [editFil, setEditFil] = useState(null)
   const [delId, setDelId] = useState(null)
   const [detail, setDetail] = useState(null)
-  const [form, setForm] = useState({ nameAr: '', nameFr: '', nameEn: '', requiredLevel: '9eme', duration: 1, diplomaType: 'تأهيل', description: '' })
+  const [form, setForm] = useState({ nameAr: '', nameFr: '', nameEn: '', requiredLevel: '3eme', duration: 2, diplomaType: 'DQP', description: '' })
 
   const lang = i18n.language
   const gn = f => lang === 'ar' ? f.nameAr : lang === 'fr' ? f.nameFr : f.nameEn
 
   const filtered = filieres.filter(f => !fLvl || f.requiredLevel === fLvl)
 
-  const openAdd = () => { setEditFil(null); setForm({ nameAr: '', nameFr: '', nameEn: '', requiredLevel: '9eme', duration: 1, diplomaType: 'تأهيل', description: '' }); setShowForm(true) }
+  const openAdd = () => { setEditFil(null); setForm({ nameAr: '', nameFr: '', nameEn: '', requiredLevel: '3eme', duration: 2, diplomaType: 'DQP', description: '' }); setShowForm(true) }
   const openEdit = (f, e) => { e.stopPropagation(); setEditFil(f); setForm({ ...f }); setShowForm(true) }
   const handleSave = () => {
     if (!form.nameAr.trim()) return toast.error(t('common.error'))
@@ -49,9 +50,9 @@ export default function FiliereList() {
           <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{filieres.length} {t('filieres.title').toLowerCase()}</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          {['', '7eme', '9eme', 'bac', 'all'].map(v => (
+          {['', '6eme', '3eme', 'cap', 'bac'].map(v => (
             <button key={v} className={`chip ${fLvl === v ? 'on' : ''}`} onClick={() => setFLvl(v)}>
-              {v === '' ? t('students.all') : v === 'all' ? t('filieres.allLevels') : t(`students.levels.${v}`)}
+              {v === '' ? t('students.all') : t(`students.levels.${v}`)}
             </button>
           ))}
           <button className="btn btn-amber" onClick={openAdd}><Plus size={15} /> {t('filieres.addFiliere')}</button>
@@ -76,10 +77,12 @@ export default function FiliereList() {
                 </div>
               </div>
               <div style={{ fontWeight: 800, fontSize: 14, color: '#111827', marginBottom: 4 }}>{gn(f)}</div>
-              <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>{f.diplomaType}</div>
+              <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>
+                <span className={`badge ${DIPLOMA_BADGE[f.diplomaType] || 'badge-gray'}`} style={{ fontSize: 10 }}>{f.diplomaType}</span>
+              </div>
               <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
                 <span className={`badge ${LVL_BADGE[f.requiredLevel] || 'badge-gray'}`}>
-                  {f.requiredLevel === 'all' ? t('filieres.allLevels') : t(`students.levels.${f.requiredLevel}`)}
+                  {t(`students.levels.${f.requiredLevel}`)}
                 </span>
                 <span className="badge badge-gray"><Clock size={9} style={{ marginInlineEnd: 3 }} />{f.duration} {t('filieres.years')}</span>
               </div>
@@ -122,7 +125,7 @@ export default function FiliereList() {
               <div className="field">
                 <label className="field-label">{t('filieres.level')}</label>
                 <select className="field-input field-select" value={form.requiredLevel} onChange={e => setForm(f => ({ ...f, requiredLevel: e.target.value }))}>
-                  {['7eme', '9eme', 'bac', 'all'].map(v => <option key={v} value={v}>{v === 'all' ? t('filieres.allLevels') : t(`students.levels.${v}`)}</option>)}
+                  {['6eme', '3eme', 'cap', 'bac'].map(v => <option key={v} value={v}>{t(`students.levels.${v}`)}</option>)}
                 </select>
               </div>
               <div className="field">
@@ -134,8 +137,9 @@ export default function FiliereList() {
               <div className="field">
                 <label className="field-label">{t('filieres.diplomaType')}</label>
                 <select className="field-input field-select" value={form.diplomaType} onChange={e => setForm(f => ({ ...f, diplomaType: e.target.value }))}>
-                  <option value="تخصص">تخصص</option>
-                  <option value="تأهيل">تأهيل</option>
+                  <option value="DSP">DSP — {t('filieres.dsp')}</option>
+                  <option value="DQP">DQP — {t('filieres.dqp')}</option>
+                  <option value="CAP">CAP — {t('filieres.cap')}</option>
                 </select>
               </div>
             </div>

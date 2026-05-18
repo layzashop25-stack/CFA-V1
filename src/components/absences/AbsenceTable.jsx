@@ -31,8 +31,8 @@ export default function AbsenceTable() {
 
   const getRec = sid => absences.find(a => a.studentId === sid && a.month === month && a.year === year) || { absenceDays: [], justifiedDays: [] }
 
-  const totalColor = n => n === 0 ? '#16a34a' : n <= 5 ? '#d97706' : '#dc2626'
-  const totalBg    = n => n === 0 ? '#dcfce7' : n <= 5 ? '#fef3c7' : '#fee2e2'
+  const totalColor = n => n === 0 ? '#16a34a' : n <= 1 ? '#d97706' : '#dc2626'
+  const totalBg    = n => n === 0 ? '#dcfce7' : n <= 1 ? '#fef3c7' : '#fee2e2'
 
   const filteredFil = filieres.filter(f => !fFil || f.id === fFil)
   const years = Array.from({ length: 5 }, (_, i) => now.getFullYear() - 2 + i)

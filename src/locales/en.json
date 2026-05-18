@@ -24,6 +24,7 @@
     "dataManagement": "Data Management",
     "equipment": "Equipment",
     "trainers": "Employees",
+    "workshops": "Workshops",
     "historique": "History"
   },
   "header": {
@@ -49,7 +50,7 @@
     "activeRate": "Active Rate",
     "ofTotal": "of total",
     "noDropouts": "No dropouts",
-    "exceededDays": "exceeded 6 days",
+    "exceededDays": "exceeded 2 days",
     "noHighAbsence": "No high absences",
     "healthCoverage": "Health Coverage",
     "specialties": "Specialties & Programs",
@@ -128,8 +129,9 @@
       "notes": "Notes"
     },
     "levels": {
-      "7eme": "7th Grade Level",
-      "9eme": "9th Grade Level",
+      "cap": "Below 6th Grade (CAP)",
+      "6eme": "6th Grade or above",
+      "3eme": "9th Grade or above",
       "bac": "Baccalaureate Level"
     },
     "familyStatus": {
@@ -180,6 +182,9 @@
     "diplomaType": "Diploma Type",
     "studentCount": "Students",
     "years": "year(s)",
+    "dsp": "Specialization Diploma (1 year)",
+    "dqp": "Qualification Diploma (2 years)",
+    "cap": "Professional Aptitude Certificate",
     "allLevels": "All Levels",
     "details": "Program Details",
     "enrolledStudents": "Enrolled Students",
@@ -192,6 +197,24 @@
     "filterLevel": "Filter by Level",
     "confirmDelete": "Are you sure you want to delete this program?",
     "noFilieres": "No programs found"
+  },
+  "workshops": {
+    "title": "Workshops & Activities",
+    "add": "Add Workshop",
+    "edit": "Edit Workshop",
+    "delete": "Delete Workshop",
+    "confirmDelete": "Are you sure you want to delete this workshop?",
+    "total": "workshop(s)",
+    "noWorkshops": "No workshops or activities",
+    "titleLabel": "Title",
+    "descLabel": "Description",
+    "occasion": "Occasion",
+    "occasionPlaceholder": "e.g. National Day, Ramadan...",
+    "date": "Date",
+    "status": "Status",
+    "image": "Photo",
+    "images": "Photos",
+    "addImages": "Add Photos"
   },
   "absences": {
     "title": "Absence Management",
@@ -249,6 +272,7 @@
     "notes": "Grades",
     "trainers": "Employees",
     "equipment": "Equipment",
+    "workshops": "Workshops & Activities",
     "replaceWarning": "Warning: all current data will be deleted.",
     "preview": "Data Preview",
     "importSuccess": "Import successful",

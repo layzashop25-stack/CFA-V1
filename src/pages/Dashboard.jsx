@@ -78,7 +78,7 @@ export default function Dashboard() {
 
   const monthAbs = absences.filter(a => a.month === now.getMonth() + 1 && a.year === now.getFullYear())
   const avgAbs = monthAbs.length ? (monthAbs.reduce((s, a) => s + a.totalAbsences, 0) / monthAbs.length).toFixed(1) : 0
-  const highAbs = monthAbs.filter(a => a.totalAbsences >= 6)
+  const highAbs = monthAbs.filter(a => a.totalAbsences >= 2)
 
   const activeKey = t('dashboard.active')
   const dropoutKey = t('dashboard.dropout')

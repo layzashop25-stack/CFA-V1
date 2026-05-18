@@ -122,13 +122,26 @@ const useStore = create((set, get) => ({
     set({ equipment }); save('cfp_equipment', equipment)
   },
 
-  // Historique — data is derived from students/trainers/equipment by schoolYear field
+  // Workshops (ورشات وأنشطة)
+  workshops: load('cfp_workshops', []),
+  addWorkshop: (w) => {
+    const workshops = [...get().workshops, w]
+    set({ workshops }); save('cfp_workshops', workshops)
+  },
+  updateWorkshop: (id, data) => {
+    const workshops = get().workshops.map(w => w.id === id ? { ...w, ...data } : w)
+    set({ workshops }); save('cfp_workshops', workshops)
+  },
+  deleteWorkshop: (id) => {
+    const workshops = get().workshops.filter(w => w.id !== id)
+    set({ workshops }); save('cfp_workshops', workshops)
+  },
 
   // Data management
   clearAll: () => {
-    set({ students: [], absences: [], notes: [], trainers: [], equipment: [] })
+    set({ students: [], absences: [], notes: [], trainers: [], equipment: [], workshops: [] })
     save('cfp_students', []); save('cfp_absences', [])
-    save('cfp_notes', []); save('cfp_trainers', []); save('cfp_equipment', [])
+    save('cfp_notes', []); save('cfp_trainers', []); save('cfp_equipment', []); save('cfp_workshops', [])
   },
   importData: (data, mode) => {
     if (mode === 'replace') {
@@ -138,10 +151,11 @@ const useStore = create((set, get) => ({
       const notes     = data.notes     || []
       const trainers  = data.trainers  || []
       const equipment = data.equipment || []
-      set({ students, filieres, absences, notes, trainers, equipment })
+      const workshops = data.workshops || []
+      set({ students, filieres, absences, notes, trainers, equipment, workshops })
       save('cfp_students', students);  save('cfp_filieres', filieres)
       save('cfp_absences', absences);  save('cfp_notes', notes)
-      save('cfp_trainers', trainers);  save('cfp_equipment', equipment)
+      save('cfp_trainers', trainers);  save('cfp_equipment', equipment); save('cfp_workshops', workshops)
     } else {
       const students  = [...get().students,  ...(data.students  || []).filter(ns => !get().students.find(s => s.id === ns.id))]
       const filieres  = [...get().filieres,  ...(data.filieres  || []).filter(nf => !get().filieres.find(f => f.id === nf.id))]
@@ -149,10 +163,11 @@ const useStore = create((set, get) => ({
       const notes     = [...get().notes,     ...(data.notes     || [])]
       const trainers  = [...get().trainers,  ...(data.trainers  || []).filter(nt => !get().trainers.find(t => t.id === nt.id))]
       const equipment = [...get().equipment, ...(data.equipment || []).filter(ne => !get().equipment.find(e => e.id === ne.id))]
-      set({ students, filieres, absences, notes, trainers, equipment })
+      const workshops = [...get().workshops, ...(data.workshops || []).filter(nw => !get().workshops.find(w => w.id === nw.id))]
+      set({ students, filieres, absences, notes, trainers, equipment, workshops })
       save('cfp_students', students);  save('cfp_filieres', filieres)
       save('cfp_absences', absences);  save('cfp_notes', notes)
-      save('cfp_trainers', trainers);  save('cfp_equipment', equipment)
+      save('cfp_trainers', trainers);  save('cfp_equipment', equipment); save('cfp_workshops', workshops)
     }
   }
 }))

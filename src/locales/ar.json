@@ -24,6 +24,7 @@
     "dataManagement": "إدارة البيانات",
     "equipment": "المعدات",
     "trainers": "الموظفون",
+    "workshops": "الورشات",
     "historique": "السجل التاريخي"
   },
   "header": {
@@ -49,7 +50,7 @@
     "activeRate": "نسبة النشاط",
     "ofTotal": "من الإجمالي",
     "noDropouts": "لا انقطاعات",
-    "exceededDays": "تجاوزوا 6 أيام",
+    "exceededDays": "تجاوزوا يومين أو أكثر",
     "noHighAbsence": "لا غياب مرتفع",
     "healthCoverage": "التغطية الصحية",
     "specialties": "تخصصات وشعب",
@@ -128,8 +129,9 @@
       "notes": "ملاحظات"
     },
     "levels": {
-      "7eme": "مستوى السابعة",
-      "9eme": "مستوى التاسعة",
+      "cap": "أقل من السادسة ابتدائي (CAP)",
+      "6eme": "السادسة ابتدائي فأكثر",
+      "3eme": "الثالثة إعدادي فأكثر",
       "bac": "مستوى الباك"
     },
     "familyStatus": {
@@ -180,7 +182,9 @@
     "diplomaType": "نوع الدبلوم",
     "studentCount": "عدد المتدربين",
     "years": "سنة",
-    "allLevels": "جميع المستويات",
+    "dsp": "شهادة التخصص (1 سنة)",
+    "dqp": "شهادة التأهيل (2 سنة)",
+    "cap": "شهادة التدرج المهني",
     "details": "تفاصيل الشعبة",
     "enrolledStudents": "المتدربون المسجلون",
     "statistics": "الإحصائيات",
@@ -189,9 +193,28 @@
     "dropouts": "المنقطعون",
     "exportPDF": "تصدير PDF",
     "exportExcel": "تصدير Excel",
+    "allLevels": "جميع المستويات",
     "filterLevel": "تصفية حسب المستوى",
     "confirmDelete": "هل أنت متأكد من حذف هذه الشعبة؟",
     "noFilieres": "لا توجد شعب"
+  },
+  "workshops": {
+    "title": "الورشات والأنشطة",
+    "add": "إضافة ورشة",
+    "edit": "تعديل الورشة",
+    "delete": "حذف الورشة",
+    "confirmDelete": "هل أنت متأكد من حذف هذه الورشة؟",
+    "total": "ورشة",
+    "noWorkshops": "لا توجد ورشات أو أنشطة",
+    "titleLabel": "العنوان",
+    "descLabel": "الوصف",
+    "occasion": "بمناسبة",
+    "occasionPlaceholder": "مثال: اليوم الوطني، رمضان...",
+    "date": "التاريخ",
+    "status": "الحالة",
+    "image": "الصورة",
+    "images": "الصور",
+    "addImages": "إضافة صور"
   },
   "absences": {
     "title": "إدارة الغياب",
@@ -249,6 +272,7 @@
     "notes": "النقط",
     "trainers": "الموظفون",
     "equipment": "المعدات",
+    "workshops": "الورشات والأنشطة",
     "replaceWarning": "تحذير: سيتم حذف جميع البيانات الحالية عند الاستبدال.",
     "preview": "معاينة البيانات",
     "importSuccess": "تم الاستيراد بنجاح",

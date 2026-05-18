@@ -11,7 +11,7 @@ const YEAR_OPTS = Array.from({ length: CY - 2024 + 3 }, (_, i) => { const y = 20
 
 const EMPTY = {
   fullName: '', birthDate: '', birthPlace: '', address: '', cinNumber: '', phone: '',
-  educationLevel: '9eme', stillStudying: false, otherTraining: false,
+  educationLevel: '3eme', stillStudying: false, otherTraining: false,
   desiredFiliere: '', filiereId: '', enrollmentYear: new Date().getFullYear().toString(),
   schoolYear: `${CY}/${CY+1}`,
   isDropout: false, dropoutDate: '', dropoutReason: '',
@@ -97,7 +97,7 @@ export default function StudentForm({ student, onClose }) {
 
   const F = t('students.fields', { returnObjects: true })
   const filOpts = filieres.map(f => [f.id, f.nameAr])
-  const lvlOpts = [['7eme', t('students.levels.7eme')], ['9eme', t('students.levels.9eme')], ['bac', t('students.levels.bac')]]
+  const lvlOpts = [['cap', t('students.levels.cap')], ['6eme', t('students.levels.6eme')], ['3eme', t('students.levels.3eme')], ['bac', t('students.levels.bac')]]
   const famOpts = Object.entries(t('students.familyStatus', { returnObjects: true }))
   const marOpts = Object.entries(t('students.maritalStatus', { returnObjects: true }))
   const hlthOpts = Object.entries(t('students.healthStatus', { returnObjects: true }))
