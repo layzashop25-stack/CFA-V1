@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Edit2, Trash2, X, Calendar, Image, Tag, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, Edit2, Trash2, X, Calendar, Image, Tag, ChevronLeft, ChevronRight, FileDown } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
 import useStore from '../store/useStore'
 import ConfirmModal from '../components/shared/ConfirmModal'
 import toast from 'react-hot-toast'
+import { generateWorkshopRapport } from '../utils/exportPDF'
 
 const STATUS_COLORS = {
   upcoming: { bg: '#dbeafe', color: '#1d4ed8', label: { ar: 'قادم', fr: 'À venir', en: 'Upcoming' } },
@@ -12,7 +13,7 @@ const STATUS_COLORS = {
   done:     { bg: '#f3f4f6', color: '#4b5563', label: { ar: 'منتهي', fr: 'Terminé', en: 'Done' } },
 }
 
-const EMPTY = { titleAr: '', titleFr: '', titleEn: '', descAr: '', descFr: '', descEn: '', occasion: '', date: '', status: 'upcoming', images: [] }
+const EMPTY = { titleAr: '', titleFr: '', titleEn: '', descAr: '', descFr: '', descEn: '', occasion: '', date: '', status: 'upcoming', images: [], beneficiaires: '', partenaire: '', encadrant: '' }
 
 const titleKey = lang => lang === 'fr' ? 'titleFr' : lang === 'en' ? 'titleEn' : 'titleAr'
 const descKey  = lang => lang === 'fr' ? 'descFr'  : lang === 'en' ? 'descEn'  : 'descAr'
@@ -160,6 +161,21 @@ export default function Workshops() {
                   <h3 style={{ fontSize: 15, fontWeight: 800, color: '#111827', lineHeight: 1.3 }}>{gn(w) || '—'}</h3>
                   {gd(w) && <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6 }}>{gd(w)}</p>}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 'auto', paddingTop: 8, borderTop: '1px solid #f3f4f6' }}>
+                    {w.beneficiaires && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#6b7280' }}>
+                        <span style={{ fontWeight: 600 }}>{t('workshops.beneficiaires')}:</span> {w.beneficiaires}
+                      </div>
+                    )}
+                    {w.encadrant && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#6b7280' }}>
+                        <span style={{ fontWeight: 600 }}>{t('workshops.encadrant')}:</span> {w.encadrant}
+                      </div>
+                    )}
+                    {w.partenaire && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#6b7280' }}>
+                        <span style={{ fontWeight: 600 }}>{t('workshops.partenaire')}:</span> {w.partenaire}
+                      </div>
+                    )}
                     {w.occasion && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#6b7280' }}>
                         <Tag size={12} color="#f59e0b" />
@@ -170,6 +186,12 @@ export default function Workshops() {
                       <Calendar size={12} color="#f59e0b" />
                       <span style={{ fontWeight: 600 }}>{t('workshops.date')}:</span> {dateStr}
                     </div>
+                    {/* Rapport generate button */}
+                    <button
+                      onClick={() => generateWorkshopRapport(w, lang, t)}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 4, padding: '5px 12px', borderRadius: 7, background: '#1e293b', color: '#fff', fontSize: 11, fontWeight: 700, border: 'none', cursor: 'pointer' }}>
+                      <FileDown size={13} /> {t('workshops.downloadRapport')}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -196,6 +218,20 @@ export default function Workshops() {
                 <label className="field-label">{t('workshops.descLabel')}</label>
                 <textarea className="field-input" rows={3} value={form[descKey(lang)] || ''}
                   onChange={e => setForm(f => ({ ...f, [descKey(lang)]: e.target.value }))} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+                <div className="field">
+                  <label className="field-label">{t('workshops.beneficiaires')}</label>
+                  <input className="field-input" value={form.beneficiaires || ''} onChange={e => setForm(f => ({ ...f, beneficiaires: e.target.value }))} />
+                </div>
+                <div className="field">
+                  <label className="field-label">{t('workshops.encadrant')}</label>
+                  <input className="field-input" value={form.encadrant || ''} onChange={e => setForm(f => ({ ...f, encadrant: e.target.value }))} />
+                </div>
+                <div className="field">
+                  <label className="field-label">{t('workshops.partenaire')}</label>
+                  <input className="field-input" value={form.partenaire || ''} onChange={e => setForm(f => ({ ...f, partenaire: e.target.value }))} />
+                </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
                 <div className="field">

@@ -50,7 +50,7 @@ export default function FiliereList() {
           <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{filieres.length} {t('filieres.title').toLowerCase()}</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          {['', '6eme', '3eme', 'cap', 'bac'].map(v => (
+          {['', '6eme', '3eme', 'cap', 'bac', 'bacplus'].map(v => (
             <button key={v} className={`chip ${fLvl === v ? 'on' : ''}`} onClick={() => setFLvl(v)}>
               {v === '' ? t('students.all') : t(`students.levels.${v}`)}
             </button>

@@ -89,7 +89,8 @@
     "exportSelected": "Export Selected",
     "deleteSelected": "Delete Selected",
     "selected": "selected",
-    "totalCount": "Total",
+    "absTotal": "Total Absences",
+    "downloadCarte": "Download Card",
     "steps": {
       "personal": "Personal Information",
       "academic": "Academic Information",
@@ -97,6 +98,8 @@
       "health": "Health & Social"
     },
     "fields": {
+      "registrationNumber": "Registration No.",
+      "sex": "Gender",
       "fullName": "Full Name",
       "birthDate": "Date of Birth",
       "birthPlace": "Place of Birth",
@@ -128,11 +131,16 @@
       "currentJob": "Current Job",
       "notes": "Notes"
     },
+    "sex": {
+      "male": "Male",
+      "female": "Female"
+    },
     "levels": {
       "cap": "Below 6th Grade (CAP)",
       "6eme": "6th Grade or above",
       "3eme": "9th Grade or above",
-      "bac": "Baccalaureate Level"
+      "bac": "Baccalaureate Level",
+      "bacplus": "Bac+"
     },
     "familyStatus": {
       "وسط_عادي": "Normal",
@@ -208,6 +216,14 @@
     "noWorkshops": "No workshops or activities",
     "titleLabel": "Title",
     "descLabel": "Description",
+    "beneficiaires": "Beneficiaries",
+    "encadrant": "Supervisor",
+    "partenaire": "Partner",
+    "rapport": "Report",
+    "downloadRapport": "Download Report",
+    "uploadRapport": "Upload Report",
+    "changeRapport": "Change Report",
+    "rapportUploaded": "Report attached",
     "occasion": "Occasion",
     "occasionPlaceholder": "e.g. National Day, Ramadan...",
     "date": "Date",
@@ -228,6 +244,10 @@
     "filterFiliere": "Filter by Program",
     "allFilieres": "All Programs",
     "edit": "Edit",
+    "viewMonthly": "Monthly",
+    "viewAnnual": "Annual",
+    "schoolYear": "School Year",
+    "annualTotal": "Annual Total",
     "editModeBanner": "Edit mode — click a cell to mark or unmark absence",
     "editModeExit": "Click \"Save\" to exit",
     "present": "Present",
@@ -254,7 +274,9 @@
     "passed": "Passed",
     "failed": "Failed",
     "exportPDF": "Export PDF",
-    "noFiliere": "Select a program"
+    "noFiliere": "Select a program",
+    "formula": "Result = (Theory × 40%) + (Practical × 60%)",
+    "successRate": "Success Rate"
   },
   "data": {
     "title": "Data Management",

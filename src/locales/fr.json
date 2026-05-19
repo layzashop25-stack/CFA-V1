@@ -89,7 +89,8 @@
     "exportSelected": "Exporter sélection",
     "deleteSelected": "Supprimer sélection",
     "selected": "sélectionné(s)",
-    "totalCount": "Total",
+    "absTotal": "Total Absences",
+    "downloadCarte": "Tél. Carte",
     "steps": {
       "personal": "Informations personnelles",
       "academic": "Informations académiques",
@@ -97,6 +98,8 @@
       "health": "Santé & Social"
     },
     "fields": {
+      "registrationNumber": "N° d'inscription",
+      "sex": "Sexe",
       "fullName": "Nom complet",
       "birthDate": "Date de naissance",
       "birthPlace": "Lieu de naissance",
@@ -128,11 +131,16 @@
       "currentJob": "Métier actuel",
       "notes": "Notes"
     },
+    "sex": {
+      "male": "Masculin",
+      "female": "Féminin"
+    },
     "levels": {
       "cap": "Moins de 6ème primaire (CAP)",
       "6eme": "6ème primaire ou plus",
       "3eme": "3ème collège ou plus",
-      "bac": "Niveau Bac"
+      "bac": "Niveau Bac",
+      "bacplus": "Bac+"
     },
     "familyStatus": {
       "وسط_عادي": "Milieu normal",
@@ -208,6 +216,14 @@
     "noWorkshops": "Aucun atelier ou activité",
     "titleLabel": "Titre",
     "descLabel": "Description",
+    "beneficiaires": "Bénéficiaires",
+    "encadrant": "Encadrant",
+    "partenaire": "Partenaire",
+    "rapport": "Rapport",
+    "downloadRapport": "Télécharger le rapport",
+    "uploadRapport": "Joindre le rapport",
+    "changeRapport": "Changer le rapport",
+    "rapportUploaded": "Rapport joint",
     "occasion": "À l'occasion de",
     "occasionPlaceholder": "Ex: Fête nationale, Ramadan...",
     "date": "Date",
@@ -228,6 +244,10 @@
     "filterFiliere": "Filtrer par filière",
     "allFilieres": "Toutes les filières",
     "edit": "Modifier",
+    "viewMonthly": "Mensuel",
+    "viewAnnual": "Annuel",
+    "schoolYear": "Année scolaire",
+    "annualTotal": "Total annuel",
     "editModeBanner": "Mode édition — cliquez sur une cellule pour marquer ou annuler une absence",
     "editModeExit": "Cliquez sur \"Enregistrer\" pour quitter",
     "present": "Présent",
@@ -254,7 +274,9 @@
     "passed": "Admis",
     "failed": "Refusé",
     "exportPDF": "Exporter PDF",
-    "noFiliere": "Choisir une filière"
+    "noFiliere": "Choisir une filière",
+    "formula": "Résultat = (Théorie × 40%) + (Pratique × 60%)",
+    "successRate": "Taux de réussite"
   },
   "data": {
     "title": "Gestion des Données",

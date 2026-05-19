@@ -22,6 +22,138 @@ function addHeader(doc, title, subtitle = '') {
   doc.setTextColor(0, 0, 0)
 }
 
+// Workshop Rapport PDF
+export function generateWorkshopRapport(w, lang, t) {
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+
+  const title = lang === 'fr' ? w.titleFr : lang === 'en' ? w.titleEn : w.titleAr
+  const desc  = lang === 'fr' ? w.descFr  : lang === 'en' ? w.descEn  : w.descAr
+
+  addHeader(doc, 'Rapport d\'Atelier / تقرير الورشة', title || '')
+
+  const dateStr = w.date ? new Date(w.date).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'
+
+  const rows = [
+    [t('workshops.titleLabel'),       title       || '—'],
+    [t('workshops.date'),             dateStr],
+    [t('workshops.occasion'),         w.occasion  || '—'],
+    [t('workshops.beneficiaires'),    w.beneficiaires || '—'],
+    [t('workshops.encadrant'),        w.encadrant || '—'],
+    [t('workshops.partenaire'),       w.partenaire || '—'],
+  ]
+
+  autoTable(doc, {
+    startY: 35,
+    head: [],
+    body: rows,
+    theme: 'grid',
+    styles: { fontSize: 10, cellPadding: 4 },
+    columnStyles: {
+      0: { fillColor: [240, 247, 243], fontStyle: 'bold', cellWidth: 60 },
+      1: { cellWidth: 120 }
+    },
+  })
+
+  // Description section
+  if (desc) {
+    const y = doc.lastAutoTable.finalY + 10
+    doc.setFontSize(11)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(30, 41, 59)
+    doc.text(t('workshops.descLabel'), 14, y)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(60, 60, 60)
+    const lines = doc.splitTextToSize(desc, 180)
+    doc.text(lines, 14, y + 7)
+  }
+
+  // Images (up to 3)
+  const images = w.images || []
+  if (images.length > 0) {
+    let imgY = (doc.lastAutoTable?.finalY || 60) + (desc ? 30 : 10)
+    doc.setFontSize(11)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(30, 41, 59)
+    doc.text('Photos', 14, imgY)
+    imgY += 6
+    images.slice(0, 3).forEach((img, i) => {
+      try {
+        doc.addImage(img, 'JPEG', 14 + i * 64, imgY, 60, 45)
+      } catch {}
+    })
+  }
+
+  // Footer
+  doc.setFontSize(8)
+  doc.setTextColor(150, 150, 150)
+  doc.text(`Centre de Formation Professionnelle — ${new Date().toLocaleDateString('fr-FR')}`, 105, 285, { align: 'center' })
+
+  const filename = (title || 'rapport').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\u0600-\u06FF-]/g, '')
+  doc.save(`rapport-${filename}.pdf`)
+}
+
+// Student Carte (ID card style — placeholder, user will design later)
+export function generateStudentCarte(student, filiere, t) {
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [85.6, 54] })
+  const filName = filiere ? filiere.nameAr : '—'
+  const F = t('students.fields', { returnObjects: true })
+
+  // Background
+  doc.setFillColor(30, 41, 59)
+  doc.rect(0, 0, 85.6, 54, 'F')
+  doc.setFillColor(245, 158, 11)
+  doc.rect(0, 0, 85.6, 10, 'F')
+
+  // Header
+  doc.setTextColor(30, 41, 59)
+  doc.setFontSize(6)
+  doc.setFont('helvetica', 'bold')
+  doc.text('Centre de Formation Professionnelle', 42.8, 6.5, { align: 'center' })
+
+  // Avatar circle
+  doc.setFillColor(245, 158, 11)
+  doc.circle(12, 27, 8, 'F')
+  doc.setTextColor(255, 255, 255)
+  doc.setFontSize(12)
+  doc.setFont('helvetica', 'bold')
+  doc.text((student.fullName || '?').charAt(0).toUpperCase(), 12, 30, { align: 'center' })
+
+  // Info
+  doc.setFontSize(8)
+  doc.setFont('helvetica', 'bold')
+  doc.setTextColor(255, 255, 255)
+  doc.text(student.fullName || '—', 24, 18)
+
+  doc.setFontSize(6)
+  doc.setFont('helvetica', 'normal')
+  doc.setTextColor(148, 163, 184)
+  const rows = [
+    [F.cinNumber + ':', student.cinNumber || '—'],
+    [F.filiereId + ':', filName],
+    [t('common.schoolYear') + ':', student.schoolYear || '—'],
+    [F.phone + ':', student.phone || '—'],
+  ]
+  rows.forEach(([label, val], i) => {
+    doc.setTextColor(148, 163, 184)
+    doc.text(label, 24, 24 + i * 5)
+    doc.setTextColor(255, 255, 255)
+    doc.text(val, 50, 24 + i * 5)
+  })
+
+  // Registration number
+  if (student.registrationNumber) {
+    doc.setFillColor(245, 158, 11)
+    doc.roundedRect(24, 44, 40, 6, 1, 1, 'F')
+    doc.setTextColor(30, 41, 59)
+    doc.setFontSize(6)
+    doc.setFont('helvetica', 'bold')
+    doc.text('N° ' + student.registrationNumber, 44, 48, { align: 'center' })
+  }
+
+  doc.save(`carte-${student.fullName.replace(/\s+/g, '-')}.pdf`)
+}
+
 // Student inscription PDF
 export function generateStudentPDF(student, filiere, t) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })

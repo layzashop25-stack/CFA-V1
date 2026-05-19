@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
-import { Plus, Search, Eye, Edit2, Trash2, Upload, UserX, UserCheck, CheckSquare, Square, Download, X, Filter } from 'lucide-react'
+import { Plus, Search, Eye, Edit2, Trash2, Upload, UserX, UserCheck, CheckSquare, Square, Download, X, CreditCard } from 'lucide-react'
 import useStore from '../../store/useStore'
 import ConfirmModal from '../shared/ConfirmModal'
 import Pagination from '../shared/Pagination'
@@ -10,6 +10,7 @@ import StudentCard from './StudentCard'
 import StudentImport from './StudentImport'
 import toast from 'react-hot-toast'
 import { exportStudentsExcel } from '../../utils/exportExcel'
+import { generateStudentCarte } from '../../utils/exportPDF'
 
 const PER = 15
 
@@ -21,6 +22,7 @@ export default function StudentList() {
   const deleteStudent = useStore(s => s.deleteStudent)
   const deleteStudents = useStore(s => s.deleteStudents)
   const updateStudent = useStore(s => s.updateStudent)
+  const absences = useStore(s => s.absences)
 
   const [search, setSearch] = useState('')
   const [fFil, setFFil] = useState('')
@@ -38,6 +40,7 @@ export default function StudentList() {
 
   const lang = i18n.language
   const gn = f => f ? (lang === 'ar' ? f.nameAr : lang === 'fr' ? f.nameFr : f.nameEn) : '—'
+  const totalAnnualAbs = sid => absences.filter(a => a.studentId === sid).reduce((sum, a) => sum + (a.absenceDays?.length || 0), 0)
 
   useEffect(() => { if (params.get('add')) setShowForm(true) }, [params])
 
@@ -104,7 +107,7 @@ export default function StudentList() {
           <div style={{ width: 1, height: 20, background: '#e5e7eb' }} />
 
           {/* Level chips */}
-          {['7eme', '9eme', 'bac'].map(l => (
+          {['cap', '6eme', '3eme', 'bac', 'bacplus'].map(l => (
             <button key={l} className={`chip ${fLvl === l ? 'on-blue' : ''}`}
               onClick={() => { setFLvl(fLvl === l ? '' : l); setPage(1) }}>
               {t(`students.levels.${l}`)}
@@ -154,12 +157,13 @@ export default function StudentList() {
                 <th>{t('students.filiere')}</th>
                 <th>{t('students.level')}</th>
                 <th>{t('students.status')}</th>
+                <th>{t('students.absTotal')}</th>
                 <th style={{ textAlign: 'center' }}>{t('students.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {paged.length === 0 ? (
-                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '48px 16px', color: '#9ca3af' }}>
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px 16px', color: '#9ca3af' }}>
                   <Search size={28} color="#e5e7eb" style={{ margin: '0 auto 8px' }} />
                   <div>{t('students.noStudents')}</div>
                 </td></tr>
@@ -190,8 +194,12 @@ export default function StudentList() {
                         {s.isDropout ? t('students.dropout') : t('students.active')}
                       </span>
                     </td>
+                    <td style={{ textAlign: 'center', fontWeight: 700, color: totalAnnualAbs(s.id) >= 2 ? '#dc2626' : '#16a34a', fontSize: 13 }}>
+                      {totalAnnualAbs(s.id)}
+                    </td>
                     <td>
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                        <button className="btn btn-white btn-icon-only btn-sm" title={t('students.downloadCarte')} onClick={() => generateStudentCarte(s, filieres.find(f => f.id === s.filiereId), t)}><CreditCard size={13} color="#7c3aed" /></button>
                         <button className="btn btn-white btn-icon-only btn-sm" title={t('common.view')} onClick={() => setViewS(s)}><Eye size={13} /></button>
                         <button className="btn btn-white btn-icon-only btn-sm" title={t('common.edit')} onClick={() => { setEditS(s); setShowForm(true) }}><Edit2 size={13} /></button>
                         <button className="btn btn-white btn-icon-only btn-sm" title={s.isDropout ? t('students.removeDropout') : t('students.markDropout')}

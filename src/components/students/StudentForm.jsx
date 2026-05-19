@@ -9,10 +9,19 @@ const STEPS = ['personal', 'academic', 'guardian', 'health']
 const CY = new Date().getFullYear()
 const YEAR_OPTS = Array.from({ length: CY - 2024 + 3 }, (_, i) => { const y = 2024 + i; return `${y}/${y+1}` })
 
+const LEVEL_DIPLOMA = {
+  cap:     ['CAP'],
+  '6eme':  ['DSP'],
+  '3eme':  ['DQP'],
+  bac:     ['DQP', 'DSP'],
+  bacplus: ['DQP', 'DSP'],
+}
+
 const EMPTY = {
-  fullName: '', birthDate: '', birthPlace: '', address: '', cinNumber: '', phone: '',
+  registrationNumber: '', fullName: '', sex: 'ذكر',
+  birthDate: '', birthPlace: '', address: '', cinNumber: '', phone: '',
   educationLevel: '3eme', stillStudying: false, otherTraining: false,
-  desiredFiliere: '', filiereId: '', enrollmentYear: new Date().getFullYear().toString(),
+  desiredFiliere: '', filiereId: '',
   schoolYear: `${CY}/${CY+1}`,
   isDropout: false, dropoutDate: '', dropoutReason: '',
   guardianName: '', guardianProfession: '', guardianPhone: '',
@@ -22,11 +31,12 @@ const EMPTY = {
   residenceArea: 'حضري', isWorking: false, currentJob: '', notes: ''
 }
 
-/* ── Field components defined OUTSIDE the form to prevent remount on re-render ── */
 function Inp({ field, type = 'text', req, span2, label, value, onChange, error }) {
   return (
     <div className="field" style={span2 ? { gridColumn: 'span 2' } : {}}>
-      <label className="field-label">{label}{req && <span style={{ color: '#ef4444', marginInlineStart: 3 }}>*</span>}</label>
+      <label className="field-label">
+        {label}{req && <span style={{ color: '#ef4444', marginInlineStart: 3 }}>*</span>}
+      </label>
       <input type={type} className={`field-input${error ? ' err' : ''}`}
         value={value || ''} onChange={e => onChange(field, e.target.value)} />
     </div>
@@ -36,7 +46,9 @@ function Inp({ field, type = 'text', req, span2, label, value, onChange, error }
 function Sel({ field, opts, req, span2, label, value, onChange, error }) {
   return (
     <div className="field" style={span2 ? { gridColumn: 'span 2' } : {}}>
-      <label className="field-label">{label}{req && <span style={{ color: '#ef4444', marginInlineStart: 3 }}>*</span>}</label>
+      <label className="field-label">
+        {label}{req && <span style={{ color: '#ef4444', marginInlineStart: 3 }}>*</span>}
+      </label>
       <select className={`field-input field-select${error ? ' err' : ''}`}
         value={value || ''} onChange={e => onChange(field, e.target.value)}>
         <option value="">—</option>
@@ -74,12 +86,15 @@ export default function StudentForm({ student, onClose }) {
 
   const set = (f, v) => setData(d => ({ ...d, [f]: v }))
 
+  const allowedDiplomas = LEVEL_DIPLOMA[data.educationLevel] || ['DSP', 'DQP', 'CAP']
+  const filOpts = filieres.filter(f => allowedDiplomas.includes(f.diplomaType)).map(f => [f.id, f.nameAr])
+
   const validate = () => {
     const e = {}
     if (step === 0) {
-      if (!data.fullName.trim()) e.fullName = true
-      if (!data.cinNumber.trim()) e.cinNumber = true
-      if (!data.phone.trim()) e.phone = true
+      if (!data.fullName?.trim()) e.fullName = true
+      if (!data.cinNumber?.trim()) e.cinNumber = true
+      if (!data.phone?.trim()) e.phone = true
     }
     if (step === 1 && !data.filiereId) e.filiereId = true
     setErrors(e)
@@ -89,21 +104,21 @@ export default function StudentForm({ student, onClose }) {
   const submit = () => {
     if (!validate()) return
     const now = new Date().toISOString()
-    if (student) { updateStudent(student.id, { ...data, updatedAt: now }) }
-    else { addStudent({ ...data, id: uuidv4(), createdAt: now, updatedAt: now }) }
+    if (student) updateStudent(student.id, { ...data, updatedAt: now })
+    else addStudent({ ...data, id: uuidv4(), createdAt: now, updatedAt: now })
     toast.success(t('common.success'))
     onClose()
   }
 
   const F = t('students.fields', { returnObjects: true })
-  const filOpts = filieres.map(f => [f.id, f.nameAr])
-  const lvlOpts = [['cap', t('students.levels.cap')], ['6eme', t('students.levels.6eme')], ['3eme', t('students.levels.3eme')], ['bac', t('students.levels.bac')]]
-  const famOpts = Object.entries(t('students.familyStatus', { returnObjects: true }))
-  const marOpts = Object.entries(t('students.maritalStatus', { returnObjects: true }))
-  const hlthOpts = Object.entries(t('students.healthStatus', { returnObjects: true }))
-  const covOpts = Object.entries(t('students.healthCoverage', { returnObjects: true }))
-  const transOpts = Object.entries(t('students.transportMode', { returnObjects: true }))
-  const resOpts = Object.entries(t('students.residenceArea', { returnObjects: true }))
+  const lvlOpts  = [['cap', t('students.levels.cap')], ['6eme', t('students.levels.6eme')], ['3eme', t('students.levels.3eme')], ['bac', t('students.levels.bac')], ['bacplus', t('students.levels.bacplus')]]
+  const sexOpts  = [['ذكر', t('students.sex.male')], ['أنثى', t('students.sex.female')]]
+  const famOpts  = Object.entries(t('students.familyStatus',  { returnObjects: true }))
+  const marOpts  = Object.entries(t('students.maritalStatus', { returnObjects: true }))
+  const hlthOpts = Object.entries(t('students.healthStatus',  { returnObjects: true }))
+  const covOpts  = Object.entries(t('students.healthCoverage',{ returnObjects: true }))
+  const transOpts= Object.entries(t('students.transportMode', { returnObjects: true }))
+  const resOpts  = Object.entries(t('students.residenceArea', { returnObjects: true }))
 
   return (
     <div className="modal-bg" onClick={onClose}>
@@ -114,7 +129,6 @@ export default function StudentForm({ student, onClose }) {
         </div>
 
         <div className="modal-body">
-          {/* Steps */}
           <div className="steps">
             {STEPS.map((s, i) => (
               <div key={s} className="step" style={{ flex: 1 }}>
@@ -129,38 +143,47 @@ export default function StudentForm({ student, onClose }) {
             ))}
           </div>
 
-          {/* Step content */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+
+            {/* ── Step 0: Personal ── */}
             {step === 0 && <>
+              <Inp field="registrationNumber" label={F.registrationNumber} value={data.registrationNumber} onChange={set} />
+              <Sel field="sex" opts={sexOpts} req label={F.sex} value={data.sex} onChange={set} />
               <Inp field="fullName" req span2 label={F.fullName} value={data.fullName} onChange={set} error={errors.fullName} />
               <Inp field="cinNumber" req label={F.cinNumber} value={data.cinNumber} onChange={set} error={errors.cinNumber} />
               <Inp field="phone" type="tel" req label={F.phone} value={data.phone} onChange={set} error={errors.phone} />
               <Inp field="birthDate" type="date" label={F.birthDate} value={data.birthDate} onChange={set} />
               <Inp field="birthPlace" label={F.birthPlace} value={data.birthPlace} onChange={set} />
               <Inp field="address" span2 label={F.address} value={data.address} onChange={set} />
+              <Sel field="maritalStatus" opts={marOpts} label={F.maritalStatus} value={data.maritalStatus} onChange={set} />
             </>}
+
+            {/* ── Step 1: Academic ── */}
             {step === 1 && <>
-              <Sel field="educationLevel" opts={lvlOpts} label={F.educationLevel} value={data.educationLevel} onChange={set} />
-              <Sel field="desiredFiliere" opts={filOpts} req label={F.desiredFiliere} value={data.desiredFiliere}
-                onChange={(f, v) => { set('desiredFiliere', v); set('filiereId', v) }}
-                error={errors.filiereId} />
-              <Inp field="enrollmentYear" label={F.enrollmentYear} value={data.enrollmentYear} onChange={set} />
+              <Sel field="educationLevel" opts={lvlOpts} label={F.educationLevel} value={data.educationLevel}
+                onChange={(f, v) => { set(f, v); set('desiredFiliere', ''); set('filiereId', '') }} />
               <div className="field">
                 <label className="field-label">{t('common.schoolYear')} <span style={{ color: '#ef4444' }}>*</span></label>
                 <select className="field-input field-select" value={data.schoolYear || ''} onChange={e => set('schoolYear', e.target.value)}>
                   {YEAR_OPTS.map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
               </div>
+              <Sel field="desiredFiliere" opts={filOpts} req span2 label={F.desiredFiliere} value={data.desiredFiliere}
+                onChange={(f, v) => { set('desiredFiliere', v); set('filiereId', v) }}
+                error={errors.filiereId} />
               <Tog field="stillStudying" label={F.stillStudying} value={data.stillStudying} onChange={set} yesLabel={t('students.yes')} noLabel={t('students.no')} />
               <Tog field="otherTraining" label={F.otherTraining} value={data.otherTraining} onChange={set} yesLabel={t('students.yes')} noLabel={t('students.no')} />
             </>}
+
+            {/* ── Step 2: Guardian ── */}
             {step === 2 && <>
               <Inp field="guardianName" label={F.guardianName} value={data.guardianName} onChange={set} />
               <Inp field="guardianPhone" type="tel" label={F.guardianPhone} value={data.guardianPhone} onChange={set} />
-              <Inp field="guardianProfession" label={F.guardianProfession} value={data.guardianProfession} onChange={set} />
+              <Inp field="guardianProfession" span2 label={F.guardianProfession} value={data.guardianProfession} onChange={set} />
               <Sel field="familyStatus" opts={famOpts} label={F.familyStatus} value={data.familyStatus} onChange={set} />
-              <Sel field="maritalStatus" opts={marOpts} label={F.maritalStatus} value={data.maritalStatus} onChange={set} />
             </>}
+
+            {/* ── Step 3: Health ── */}
             {step === 3 && <>
               <Sel field="healthStatus" opts={hlthOpts} label={F.healthStatus} value={data.healthStatus} onChange={set} />
               {data.healthStatus === 'إعاقة' && <Inp field="disabilityType" label={F.disabilityType} value={data.disabilityType} onChange={set} />}
@@ -176,6 +199,7 @@ export default function StudentForm({ student, onClose }) {
                 <textarea className="field-input" rows={2} value={data.notes || ''} onChange={e => set('notes', e.target.value)} />
               </div>
             </>}
+
           </div>
         </div>
 

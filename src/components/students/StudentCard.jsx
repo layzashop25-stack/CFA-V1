@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { X, Download, User, BookOpen, Heart, Users, Briefcase } from 'lucide-react'
+import { X, Download, User, BookOpen, Heart, Users, CreditCard } from 'lucide-react'
 import useStore from '../../store/useStore'
-import { generateStudentPDF } from '../../utils/exportPDF'
+import { generateStudentPDF, generateStudentCarte } from '../../utils/exportPDF'
 
 const Sec = ({ icon: Icon, title, children }) => (
   <div style={{ marginBottom: 20 }}>
@@ -40,6 +40,9 @@ export default function StudentCard({ student, onClose }) {
         <div className="modal-head">
           <span className="modal-head-title">{t('students.viewStudent')}</span>
           <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-white btn-sm" onClick={() => generateStudentCarte(student, fil, t)}>
+              <CreditCard size={13} color="#7c3aed" /> {t('students.downloadCarte')}
+            </button>
             <button className="btn btn-amber btn-sm" onClick={() => generateStudentPDF(student, fil, t)}>
               <Download size={13} /> {t('students.downloadPDF')}
             </button>
@@ -65,14 +68,18 @@ export default function StudentCard({ student, onClose }) {
 
         <div className="modal-body" style={{ maxHeight: '55vh', overflowY: 'auto' }}>
           <Sec icon={User} title={t('students.steps.personal')}>
+            <F label={Fl.registrationNumber} value={student.registrationNumber} />
+            <F label={Fl.sex} value={student.sex} />
             <F label={Fl.birthDate} value={student.birthDate} />
             <F label={Fl.birthPlace} value={student.birthPlace} />
             <F label={Fl.address} value={student.address} full />
+            <F label={Fl.familyStatus} value={t(`students.familyStatus.${student.familyStatus}`)} />
+            <F label={Fl.maritalStatus} value={t(`students.maritalStatus.${student.maritalStatus}`)} />
           </Sec>
           <Sec icon={BookOpen} title={t('students.steps.academic')}>
             <F label={Fl.filiereId} value={filName} />
             <F label={Fl.educationLevel} value={t(`students.levels.${student.educationLevel}`)} />
-            <F label={Fl.enrollmentYear} value={student.enrollmentYear} />
+            <F label={t('common.schoolYear')} value={student.schoolYear} />
             <F label={Fl.stillStudying} value={bool(student.stillStudying)} />
             <F label={Fl.otherTraining} value={bool(student.otherTraining)} />
             {student.isDropout && <F label={Fl.dropoutDate} value={student.dropoutDate} />}
@@ -82,8 +89,6 @@ export default function StudentCard({ student, onClose }) {
             <F label={Fl.guardianName} value={student.guardianName} />
             <F label={Fl.guardianPhone} value={student.guardianPhone} />
             <F label={Fl.guardianProfession} value={student.guardianProfession} />
-            <F label={Fl.familyStatus} value={t(`students.familyStatus.${student.familyStatus}`)} />
-            <F label={Fl.maritalStatus} value={t(`students.maritalStatus.${student.maritalStatus}`)} />
           </Sec>
           <Sec icon={Heart} title={t('students.steps.health')}>
             <F label={Fl.healthStatus} value={t(`students.healthStatus.${student.healthStatus}`)} />

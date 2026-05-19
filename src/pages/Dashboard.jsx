@@ -89,9 +89,11 @@ export default function Dashboard() {
   })).filter(d => d[activeKey] + d[dropoutKey] > 0)
 
   const levelData = [
-    { name: t('students.levels.7eme'), value: students.filter(s => s.educationLevel === '7eme').length },
-    { name: t('students.levels.9eme'), value: students.filter(s => s.educationLevel === '9eme').length },
-    { name: t('students.levels.bac'), value: students.filter(s => s.educationLevel === 'bac').length },
+    { name: t('students.levels.cap'),    value: students.filter(s => s.educationLevel === 'cap').length },
+    { name: t('students.levels.6eme'),   value: students.filter(s => s.educationLevel === '6eme').length },
+    { name: t('students.levels.3eme'),   value: students.filter(s => s.educationLevel === '3eme').length },
+    { name: t('students.levels.bac'),    value: students.filter(s => s.educationLevel === 'bac').length },
+    { name: t('students.levels.bacplus'),value: students.filter(s => s.educationLevel === 'bacplus').length },
   ].filter(d => d.value > 0)
 
   const coverageData = ['AMO', 'CNSS', 'CNOPS', 'SANS'].map(c => ({

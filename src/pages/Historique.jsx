@@ -265,14 +265,14 @@ export default function Historique() {
             <Section id="equipment" icon={Wrench} title={t('historique.equipment')} count={yearEquipment.length} color="#06b6d4">
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <THead cols={[t('equipment.name'), t('equipment.brand'), t('equipment.quantity'), t('equipment.filiere'), t('equipment.status')]} />
+                  <THead cols={[t('equipment.name'), t('equipment.inventaire'), t('equipment.quantity'), t('equipment.filiere'), t('equipment.status')]} />
                   <tbody>
                     {yearEquipment.map(eq => {
                       const fil = filieres.find(f => f.id === eq.filiereId)
                       return (
                         <Row key={eq.id} cols={[
                           <span style={{ fontWeight: 600 }}>{eq.name}</span>,
-                          eq.brand || '—',
+                          eq.inventaire || '—',
                           eq.quantity,
                           gn(fil),
                           t(`equipment.statuses.${eq.status}`)

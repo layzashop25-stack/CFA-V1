@@ -72,7 +72,7 @@ export default function NotesManager() {
             </div>
           </div>
           <div style={{ marginInlineStart: 'auto', padding: '8px 14px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 12, color: '#6b7280' }}>
-            النتيجة = (نظري × 40%) + (تطبيقي × 60%)
+            {t('notes.formula')}
           </div>
         </div>
       </div>
@@ -159,7 +159,7 @@ export default function NotesManager() {
               <span style={{ fontSize: 12, fontWeight: 700, color: '#16a34a' }}>{t('notes.passed')}: {passCount}</span>
               <span style={{ fontSize: 12, fontWeight: 700, color: '#dc2626' }}>{t('notes.failed')}: {filStudents.length - passCount}</span>
               <span style={{ marginInlineStart: 'auto', fontSize: 12, color: '#9ca3af' }}>
-                نسبة النجاح: {filStudents.length ? ((passCount / filStudents.length) * 100).toFixed(0) : 0}%
+                {t('notes.successRate')}: {filStudents.length ? ((passCount / filStudents.length) * 100).toFixed(0) : 0}%
               </span>
             </div>
           )}
