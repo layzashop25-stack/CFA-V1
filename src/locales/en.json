@@ -321,7 +321,17 @@
     "specialty": "Specialty",
     "grade": "Grade",
     "contractType": "Contract Type",
+    "matricule": "Matricule",
+    "som": "SOM",
+    "etatCivile": "Civil Status",
     "hireDate": "Hire Date",
+    "etatCivileOptions": {
+      "عازب": "Single",
+      "متزوج": "Married",
+      "مطلق": "Divorced",
+      "أرمل": "Widowed"
+    },
+    "address": "Address",
     "salary": "Base Salary",
     "hourlyRate": "Hourly Rate",
     "monthlyHours": "Hours This Month",

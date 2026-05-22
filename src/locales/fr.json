@@ -321,7 +321,17 @@
     "specialty": "Spécialité",
     "grade": "Grade",
     "contractType": "Type de contrat",
-    "hireDate": "Date d'embauche",
+    "matricule": "Matricule",
+    "som": "SOM",
+    "etatCivile": "État civil",
+    "hireDate": "Date de recrutement",
+    "etatCivileOptions": {
+      "عازب": "Célibataire",
+      "متزوج": "Marié(e)",
+      "مطلق": "Divorcé(e)",
+      "أرمل": "Veuf/Veuve"
+    },
+    "address": "Adresse",
     "salary": "Salaire de base",
     "hourlyRate": "Taux horaire",
     "monthlyHours": "Heures du mois",

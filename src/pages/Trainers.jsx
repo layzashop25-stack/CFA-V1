@@ -24,10 +24,9 @@ const YEAR_OPTS = Array.from({ length: CY - 2024 + 3 }, (_, i) => { const y = 20
 
 const EMPTY = {
   fullName: '', cin: '', phone: '', email: '',
-  specialty: '', grade: 'professor', contractType: 'nazami',
-  hireDate: '', salary: '', filiereIds: [],
-  status: 'active', notes: '', photo: '',
-  hourlyRate: '', monthlyHours: '',
+  specialty: '', contractType: 'nazami',
+  hireDate: '', matricule: '', som: '', etatCivile: '', address: '',
+  filiereIds: [], status: 'active', notes: '', photo: '',
   schoolYear: `${CY}/${CY+1}`
 }
 
@@ -217,9 +216,10 @@ export default function Trainers() {
                       <span style={{ fontFamily: 'monospace' }}>{tr.cin}</span>
                     </div>
                   )}
-                  {tr.hourlyRate && tr.monthlyHours && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#d97706', fontWeight: 700 }}>
-                      <span>{tr.monthlyHours}h × {tr.hourlyRate} = {(parseFloat(tr.hourlyRate) * parseFloat(tr.monthlyHours)).toFixed(2)} MAD</span>
+                  {tr.matricule && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#6b7280' }}>
+                      <span style={{ fontWeight: 700, color: '#9ca3af', fontSize: 10 }}>MAT</span>
+                      <span style={{ fontFamily: 'monospace' }}>{tr.matricule}</span>
                     </div>
                   )}
                   {tr.phone && (
@@ -313,6 +313,10 @@ export default function Trainers() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <div className="field">
+                  <label className="field-label">{t('trainers.matricule')}</label>
+                  <input className="field-input" style={{ fontFamily: 'monospace' }} value={form.matricule || ''} onChange={e => sf('matricule', e.target.value)} />
+                </div>
+                <div className="field">
                   <label className="field-label">{t('trainers.cin')}</label>
                   <input className="field-input" style={{ fontFamily: 'monospace' }} value={form.cin} onChange={e => sf('cin', e.target.value)} />
                 </div>
@@ -325,16 +329,19 @@ export default function Trainers() {
                   <input className="field-input" type="email" value={form.email} onChange={e => sf('email', e.target.value)} />
                 </div>
                 <div className="field">
-                  <label className="field-label">{t('trainers.hireDate')}</label>
-                  <input className="field-input" type="date" value={form.hireDate} onChange={e => sf('hireDate', e.target.value)} />
+                  <label className="field-label">{t('trainers.etatCivile')}</label>
+                  <select className="field-input field-select" value={form.etatCivile || ''} onChange={e => sf('etatCivile', e.target.value)}>
+                    <option value="">—</option>
+                    {['عازب', 'متزوج', 'مطلق', 'أرمل'].map(v => <option key={v} value={v}>{t(`trainers.etatCivileOptions.${v}`)}</option>)}
+                  </select>
                 </div>
                 <div className="field">
-                  <label className="field-label">{t('trainers.grade')}</label>
-                  <select className="field-input field-select" value={form.grade} onChange={e => sf('grade', e.target.value)}>
-                    {['professor', 'assistant', 'technician'].map(g => (
-                      <option key={g} value={g}>{t(`trainers.grades.${g}`)}</option>
-                    ))}
-                  </select>
+                  <label className="field-label">{t('trainers.som')}</label>
+                  <input className="field-input" value={form.som || ''} onChange={e => sf('som', e.target.value)} />
+                </div>
+                <div className="field">
+                  <label className="field-label">{t('trainers.hireDate')}</label>
+                  <input className="field-input" type="date" value={form.hireDate} onChange={e => sf('hireDate', e.target.value)} />
                 </div>
                 <div className="field">
                   <label className="field-label">{t('trainers.contractType')}</label>
@@ -344,26 +351,10 @@ export default function Trainers() {
                     ))}
                   </select>
                 </div>
-                <div className="field">
-                  <label className="field-label">{t('trainers.salary')}</label>
-                  <input className="field-input" type="number" value={form.salary} onChange={e => sf('salary', e.target.value)} placeholder="0.00" />
+                <div className="field" style={{ gridColumn: 'span 2' }}>
+                  <label className="field-label">{t('trainers.address')}</label>
+                  <input className="field-input" value={form.address || ''} onChange={e => sf('address', e.target.value)} />
                 </div>
-                <div className="field">
-                  <label className="field-label">{t('trainers.hourlyRate')}</label>
-                  <input className="field-input" type="number" value={form.hourlyRate} onChange={e => sf('hourlyRate', e.target.value)} placeholder="0.00" />
-                </div>
-                <div className="field">
-                  <label className="field-label">{t('trainers.monthlyHours')}</label>
-                  <input className="field-input" type="number" value={form.monthlyHours} onChange={e => sf('monthlyHours', e.target.value)} placeholder="0" />
-                </div>
-                {form.hourlyRate && form.monthlyHours && (
-                  <div className="field" style={{ gridColumn: 'span 2' }}>
-                    <div style={{ padding: '10px 14px', background: '#fef3c7', borderRadius: 8, border: '1px solid #fcd34d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: 12, fontWeight: 600, color: '#92400e' }}>{t('trainers.totalPay')}</span>
-                      <span style={{ fontSize: 15, fontWeight: 800, color: '#d97706' }}>{(parseFloat(form.hourlyRate) * parseFloat(form.monthlyHours)).toFixed(2)} MAD</span>
-                    </div>
-                  </div>
-                )}
                 <div className="field">
                   <label className="field-label">{t('trainers.status')}</label>
                   <select className="field-input field-select" value={form.status} onChange={e => sf('status', e.target.value)}>
@@ -442,15 +433,14 @@ export default function Trainers() {
               {/* Info grid */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 20px', marginBottom: 16 }}>
                 {[
-                  [t('trainers.cin'),      viewItem.cin,      'monospace'],
-                  [t('trainers.phone'),    viewItem.phone,    null],
-                  [t('trainers.email'),    viewItem.email,    null],
-                  [t('trainers.hireDate'), viewItem.hireDate, null],
-                  [t('trainers.grade'),    t(`trainers.grades.${viewItem.grade}`), null],
-                  [t('trainers.salary'),   viewItem.salary ? `${viewItem.salary} MAD` : '—', null],
-                  [t('trainers.hourlyRate'), viewItem.hourlyRate ? `${viewItem.hourlyRate} MAD/h` : '—', null],
-                  [t('trainers.monthlyHours'), viewItem.monthlyHours ? `${viewItem.monthlyHours} h` : '—', null],
-                  [t('trainers.totalPay'), (viewItem.hourlyRate && viewItem.monthlyHours) ? `${(parseFloat(viewItem.hourlyRate) * parseFloat(viewItem.monthlyHours)).toFixed(2)} MAD` : '—', null],
+                  [t('trainers.matricule'), viewItem.matricule, 'monospace'],
+                  [t('trainers.cin'),       viewItem.cin,       'monospace'],
+                  [t('trainers.phone'),     viewItem.phone,     null],
+                  [t('trainers.email'),     viewItem.email,     null],
+                  [t('trainers.etatCivile'),viewItem.etatCivile ? t(`trainers.etatCivileOptions.${viewItem.etatCivile}`) : null,null],
+                  [t('trainers.som'),       viewItem.som ? `${viewItem.som} MAD` : null, null],
+                  [t('trainers.hireDate'),  viewItem.hireDate,  null],
+                  [t('trainers.address'),   viewItem.address,   null],
                 ].map(([label, value, ff]) => value ? (
                   <div key={label}>
                     <div style={{ fontSize: 11, color: '#9ca3af', fontWeight: 600, marginBottom: 2 }}>{label}</div>
