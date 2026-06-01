@@ -112,6 +112,7 @@
       "desiredFiliere": "Desired Program",
       "filiereId": "Enrolled Program",
       "enrollmentYear": "Enrollment Year",
+      "enrollmentDate": "Enrollment Date",
       "isDropout": "Dropout",
       "dropoutDate": "Dropout Date",
       "dropoutReason": "Dropout Reason",

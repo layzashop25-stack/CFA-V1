@@ -112,6 +112,7 @@
       "desiredFiliere": "Filière souhaitée",
       "filiereId": "Filière inscrite",
       "enrollmentYear": "Année d'inscription",
+      "enrollmentDate": "Date d'inscription",
       "isDropout": "Abandon",
       "dropoutDate": "Date d'abandon",
       "dropoutReason": "Motif d'abandon",

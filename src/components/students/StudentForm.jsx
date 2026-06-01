@@ -80,8 +80,10 @@ export default function StudentForm({ student, onClose }) {
   const filieres = useStore(s => s.filieres)
   const addStudent = useStore(s => s.addStudent)
   const updateStudent = useStore(s => s.updateStudent)
+  const nextMatricule = useStore(s => s.nextMatricule)
   const [step, setStep] = useState(0)
-  const [data, setData] = useState(student ? { ...student } : { ...EMPTY })
+  const today = new Date().toISOString().slice(0, 10)
+  const [data, setData] = useState(student ? { ...student } : { ...EMPTY, registrationNumber: nextMatricule(), enrollmentDate: today })
   const [errors, setErrors] = useState({})
 
   const set = (f, v) => setData(d => ({ ...d, [f]: v }))
@@ -105,7 +107,7 @@ export default function StudentForm({ student, onClose }) {
     if (!validate()) return
     const now = new Date().toISOString()
     if (student) updateStudent(student.id, { ...data, updatedAt: now })
-    else addStudent({ ...data, id: uuidv4(), createdAt: now, updatedAt: now })
+    else addStudent({ ...data, id: uuidv4(), enrollmentDate: data.enrollmentDate || today, createdAt: now, updatedAt: now })
     toast.success(t('common.success'))
     onClose()
   }
@@ -148,6 +150,7 @@ export default function StudentForm({ student, onClose }) {
             {/* ── Step 0: Personal ── */}
             {step === 0 && <>
               <Inp field="registrationNumber" label={F.registrationNumber} value={data.registrationNumber} onChange={set} />
+              <Inp field="enrollmentDate" type="date" label={F.enrollmentDate || 'تاريخ التسجيل'} value={data.enrollmentDate} onChange={set} />
               <Sel field="sex" opts={sexOpts} req label={F.sex} value={data.sex} onChange={set} />
               <Inp field="fullName" req span2 label={F.fullName} value={data.fullName} onChange={set} error={errors.fullName} />
               <Inp field="cinNumber" req label={F.cinNumber} value={data.cinNumber} onChange={set} error={errors.cinNumber} />

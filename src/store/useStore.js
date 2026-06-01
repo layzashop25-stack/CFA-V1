@@ -14,6 +14,12 @@ const useStore = create((set, get) => ({
   notes: load('cfp_notes', []),
 
   // Students
+  nextMatricule: () => {
+    const nums = get().students.map(s => parseInt(s.registrationNumber)).filter(n => !isNaN(n))
+    let n = 1
+    while (nums.includes(n)) n++
+    return String(n)
+  },
   addStudent: (student) => {
     const students = [...get().students, student]
     set({ students }); save('cfp_students', students)

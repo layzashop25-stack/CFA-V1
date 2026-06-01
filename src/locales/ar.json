@@ -113,6 +113,7 @@
       "desiredFiliere": "الشعبة المرغوب فيها",
       "filiereId": "الشعبة المسجل فيها",
       "enrollmentYear": "سنة التسجيل",
+      "enrollmentDate": "تاريخ التسجيل",
       "isDropout": "منقطع",
       "dropoutDate": "تاريخ الانقطاع",
       "dropoutReason": "سبب الانقطاع",

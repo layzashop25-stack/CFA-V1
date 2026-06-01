@@ -154,6 +154,7 @@ export default function StudentList() {
                 </th>
                 <th>{t('students.name')}</th>
                 <th>{t('students.fields.registrationNumber')}</th>
+                <th>{t('students.fields.enrollmentDate') || 'تاريخ التسجيل'}</th>
                 <th>{t('students.cin')}</th>
                 <th>{t('students.phone')}</th>
                 <th>{t('students.filiere')}</th>
@@ -165,7 +166,7 @@ export default function StudentList() {
             </thead>
             <tbody>
               {paged.length === 0 ? (
-                <tr><td colSpan={10} style={{ textAlign: 'center', padding: '48px 16px', color: '#9ca3af' }}>
+                <tr><td colSpan={11} style={{ textAlign: 'center', padding: '48px 16px', color: '#9ca3af' }}>
                   <Search size={28} color="#e5e7eb" style={{ margin: '0 auto 8px' }} />
                   <div>{t('students.noStudents')}</div>
                 </td></tr>
@@ -187,6 +188,7 @@ export default function StudentList() {
                       </div>
                     </td>
                     <td style={{ fontFamily: 'monospace', fontSize: 12, color: '#6b7280' }}>{s.registrationNumber || '—'}</td>
+                    <td style={{ fontSize: 12, color: '#6b7280' }}>{s.enrollmentDate || '—'}</td>
                     <td style={{ fontFamily: 'monospace', fontSize: 12, color: '#6b7280' }}>{s.cinNumber}</td>
                     <td style={{ color: '#6b7280' }}>{s.phone}</td>
                     <td style={{ color: '#6b7280', fontSize: 12 }}>{gn(fil)}</td>
