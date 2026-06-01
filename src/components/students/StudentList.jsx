@@ -11,6 +11,7 @@ import StudentImport from './StudentImport'
 import toast from 'react-hot-toast'
 import { exportStudentsExcel } from '../../utils/exportExcel'
 import { generateStudentCarte } from '../../utils/exportPDF'
+import { generateStudentWord } from '../../utils/exportWord'
 
 const PER = 15
 
@@ -152,6 +153,7 @@ export default function StudentList() {
                   </button>
                 </th>
                 <th>{t('students.name')}</th>
+                <th>{t('students.fields.registrationNumber')}</th>
                 <th>{t('students.cin')}</th>
                 <th>{t('students.phone')}</th>
                 <th>{t('students.filiere')}</th>
@@ -163,7 +165,7 @@ export default function StudentList() {
             </thead>
             <tbody>
               {paged.length === 0 ? (
-                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px 16px', color: '#9ca3af' }}>
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: '48px 16px', color: '#9ca3af' }}>
                   <Search size={28} color="#e5e7eb" style={{ margin: '0 auto 8px' }} />
                   <div>{t('students.noStudents')}</div>
                 </td></tr>
@@ -184,6 +186,7 @@ export default function StudentList() {
                         <span style={{ fontWeight: 600, color: '#111827' }}>{s.fullName}</span>
                       </div>
                     </td>
+                    <td style={{ fontFamily: 'monospace', fontSize: 12, color: '#6b7280' }}>{s.registrationNumber || '—'}</td>
                     <td style={{ fontFamily: 'monospace', fontSize: 12, color: '#6b7280' }}>{s.cinNumber}</td>
                     <td style={{ color: '#6b7280' }}>{s.phone}</td>
                     <td style={{ color: '#6b7280', fontSize: 12 }}>{gn(fil)}</td>
@@ -199,7 +202,7 @@ export default function StudentList() {
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
-                        <button className="btn btn-white btn-icon-only btn-sm" title={t('students.downloadCarte')} onClick={() => generateStudentCarte(s, filieres.find(f => f.id === s.filiereId), t)}><CreditCard size={13} color="#7c3aed" /></button>
+                        <button className="btn btn-white btn-icon-only btn-sm" title={t('students.downloadCarte')} onClick={() => generateStudentWord(s, filieres.find(f => f.id === s.filiereId), t)}><CreditCard size={13} color="#7c3aed" /></button>
                         <button className="btn btn-white btn-icon-only btn-sm" title={t('common.view')} onClick={() => setViewS(s)}><Eye size={13} /></button>
                         <button className="btn btn-white btn-icon-only btn-sm" title={t('common.edit')} onClick={() => { setEditS(s); setShowForm(true) }}><Edit2 size={13} /></button>
                         <button className="btn btn-white btn-icon-only btn-sm" title={s.isDropout ? t('students.removeDropout') : t('students.markDropout')}
